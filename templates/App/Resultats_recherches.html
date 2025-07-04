@@ -1,0 +1,1320 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PharmFind - Résultats de Recherche</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary-color: #4CAF50;
+            --secondary-color: #E0F2F1;
+            --accent-color: #FF5722;
+            --dark-color: #333;
+            --light-color: #f9f9f9;
+            --shadow: 0 2px 10px rgba(0,0,0,0.1);
+            --warning-color: #FF9800;
+            --success-color: #4CAF50;
+            --info-color: #2196F3;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'poppins', sans-serif;
+        }
+        
+        body {
+            background-image: url('pattern.png');
+            background-color: var(--light-color);
+            color: var(--dark-color);
+            padding-bottom: 80px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background-color: white;
+            box-shadow: var(--shadow);
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+        }
+        
+        .logo i {
+            margin-right: 10px;
+            font-size: 28px;
+        }
+
+        .back-btn {
+            color: var(--primary-color);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+            padding: 8px 16px;
+            border: 1px solid var(--primary-color);
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        /* Results Header */
+        .results-header {
+            background: #ffffff;
+            padding: 25px 35px;
+            border-radius: 50px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            display: inline-block;
+            color: #1C8C8C;
+            font-family: 'Quicksand', sans-serif;
+            font-weight: 600;
+            font-size: 18px;
+            max-width: 100%;
+            margin-top: 40px;
+        }
+
+        .search-summary {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            width: 100%;
+        }
+
+        .search-info h1 {
+            font-family: 'Quicksand', sans-serif;
+            color: #1C8C8C;
+            margin-bottom: 5px;
+            font-size: 22px;
+            text-align: center;
+        }
+
+        .search-details {
+            color: #666666;
+            font-size: 14px;
+            font-family: 'Quicksand', sans-serif;
+            text-align: center;
+        }
+
+        .filters-toggle {
+            display: flex;
+            gap: 10px;
+        }
+
+        .filter-btn {
+            padding: 10px 20px;
+            border: 2px solid #1C8C8C; /* turquoise Pharmafind */
+            background: #ffffff;
+            color: #1C8C8C;
+            border-radius: 25px; /* arrondi pill */
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            font-family: 'Quicksand', sans-serif;
+            box-shadow: 0 4px 10px rgba(28, 140, 140, 0.2); /* légère ombre */
+        }
+
+        .filter-btn:hover,
+        .filter-btn.active {
+            background: #1C8C8C; /* turquoise plein au hover */
+            color: #ffffff;
+            box-shadow: 0 6px 12px rgba(28, 140, 140, 0.3);
+        }
+
+
+        /* Products Grid */
+        .products-container {
+            display: grid;
+            gap: 20px;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .product-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+        }
+
+        .product-content {
+            display: grid;
+            grid-template-columns: 120px 1fr auto;
+            gap: 20px;
+            padding: 20px;
+            align-items: start;
+        }
+
+        .product-image {
+            width: 120px;
+            height: 120px;
+            border-radius: 10px;
+            object-fit: cover;
+            background: var(--light-color);
+        }
+
+        .product-details {
+            flex: 1;
+        }
+
+        .product-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 10px;
+        }
+
+        .product-name {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--dark-color);
+            margin-bottom: 5px;
+        }
+
+        .product-category {
+            background: var(--secondary-color);
+            color: var(--primary-color);
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .product-description {
+            color: #666;
+            line-height: 1.5;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+
+        .product-features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .feature-tag {
+            background: #f0f0f0;
+            padding: 4px 8px;
+            border-radius: 10px;
+            font-size: 11px;
+            color: #666;
+        }
+
+        .insurance-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .insurance-badge {
+            background: var(--info-color);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 10px;
+            font-size: 11px;
+        }
+
+        .prescription-required {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: var(--warning-color);
+            font-size: 12px;
+            margin-bottom: 10px;
+        }
+
+        .product-actions {
+            display: flex;
+            flex-direction: column;
+            align-items: end;
+            gap: 10px;
+        }
+
+        .price-section {
+            text-align: right;
+        }
+
+        .price {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .price-with-insurance {
+            font-size: 0.9rem;
+            color: #666;
+            text-decoration: line-through;
+            margin-bottom: 5px;
+        }
+
+        .action-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s;
+            text-decoration: none;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #45a049;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+        }
+
+        .btn-secondary:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn-upload {
+            background: var(--warning-color);
+            color: white;
+            font-size: 12px;
+            padding: 8px 15px;
+        }
+
+        .btn-upload:hover {
+            background: #f57c00;
+        }
+
+        .btn-uploaded {
+            background: var(--success-color);
+            color: white;
+            font-size: 12px;
+            padding: 8px 15px;
+        }
+
+        /* Pharmacy Info */
+        .pharmacy-info {
+            background: var(--light-color);
+            padding: 15px;
+            border-radius: 0 0 15px 15px;
+            border-top: 1px solid #eee;
+        }
+
+        .pharmacy-name {
+            font-weight: 600;
+            color: var(--dark-color);
+            margin-bottom: 5px;
+        }
+
+        .pharmacy-details {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            color: #666;
+        }
+
+        .distance {
+            color: var(--primary-color);
+            font-weight: 500;
+        }
+
+        .stock-status {
+            padding: 4px 8px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .in-stock {
+            background: #E8F5E8;
+            color: var(--success-color);
+        }
+
+        .low-stock {
+            background: #FFF3E0;
+            color: var(--warning-color);
+        }
+
+        .out-of-stock {
+            background: #FFEBEE;
+            color: var(--accent-color);
+        }
+
+        /* Upload Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 30px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            position: relative;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            position: absolute;
+            top: 15px;
+            right: 20px;
+        }
+
+        .close:hover {
+            color: black;
+        }
+
+        .upload-area {
+            border: 2px dashed #ddd;
+            border-radius: 10px;
+            padding: 40px;
+            text-align: center;
+            margin: 20px 0;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .upload-area:hover {
+            border-color: var(--primary-color);
+            background: var(--secondary-color);
+        }
+
+        .upload-area.dragover {
+            border-color: var(--primary-color);
+            background: var(--secondary-color);
+        }
+
+        /* Success notification */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--success-color);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+            z-index: 1001;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 15px 0;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            z-index: 1000;
+        }
+        
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #666;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .nav-item.active {
+            color: var(--primary-color);
+        }
+        
+        .nav-icon {
+            font-size: 20px;
+            margin-bottom: 5px;
+        }
+
+        .nav-item span {
+            font-size: 12px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .product-content {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .product-image {
+                width: 100%;
+                height: 200px;
+            }
+
+            .product-actions {
+                align-items: stretch;
+            }
+
+            .action-buttons {
+                flex-direction: row;
+                justify-content: space-between;
+            }
+
+            .search-summary {
+                text-align: center;
+            }
+
+            .filters-toggle {
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+        }
+
+        .product-image.img-animate {
+            transform: scale(1.10) rotate(-3deg);
+            box-shadow: 0 8px 24px rgba(44,62,80,0.18);
+            transition: transform 0.25s, box-shadow 0.25s;
+            z-index: 2;
+        }
+
+        .pharmacy-list-modern {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 6px;
+        }
+        .pharmacy-mini-card {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 10px 16px;
+            min-width: 180px;
+            box-shadow: 0 2px 8px rgba(44,62,80,0.07);
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: border 0.2s;
+        }
+        .pharmacy-mini-card.selectable:hover {
+            border: 2px solid #1C8C8C;
+            background: #e0f7fa;
+        }
+        .pharmacy-mini-title {
+            font-weight: 600;
+            color: #277e75;
+            font-size: 15px;
+        }
+        .pharmacy-mini-address {
+            color: #666;
+            font-size: 13px;
+            margin-top: 2px;
+        }
+        .pharmacy-mini-stock {
+            font-size: 13px;
+            margin-top: 4px;
+            color: #34AC4F;
+            font-weight: 500;
+        }
+        .pharmacy-mini-stock.low {
+            color: #FF9800;
+        }
+        .pharmacy-mini-stock.out {
+            color: #e53e3e;
+        }
+
+        /* Style carte pharmacie pour affichage identique à la maquette */
+        .pharmacy-card.custom {
+            background: #fff;
+            border-radius: 18px;
+            box-shadow: 0 2px 12px rgba(44,62,80,0.08);
+            overflow: hidden;
+            margin-bottom: 24px;
+            /*max-width: 420px;*/
+            /*margin-left: auto;*/
+            /*margin-right: auto;*/
+            transition: transform 0.25s cubic-bezier(.4,2,.6,1), box-shadow 0.25s cubic-bezier(.4,2,.6,1);
+        }
+        .pharmacy-card.custom:hover {
+            transform: translateY(-8px) scale(1.025);
+            box-shadow: 0 8px 32px rgba(44,62,80,0.18);
+        }
+        .pharmacy-image.custom {
+            width: 100%;
+            height: 180px;
+            background: #e5e7eb;
+            border-top-left-radius: 18px;
+            border-top-right-radius: 18px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .pharmacy-image.custom img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 18px 18px 0 0;
+        }
+        .pharmacy-info.custom {
+            padding: 28px 28px 18px 28px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        .pharmacy-rating.custom {
+            color: #20201f2e;
+            font-size: 18px;
+            margin-bottom: 8px;
+        }
+        .badge-garde {
+            background: #e0f7e9;
+            color: #277e75;
+            font-size: 15px;
+            font-weight: 600;
+            border-radius: 12px;
+            padding: 6px 18px;
+            margin-bottom: 10px;
+            display: inline-block;
+        }
+        .pharmacy-name.custom {
+            font-size: 20px;
+            font-weight: 700;
+            margin: 10px 0 6px 0;
+        }
+        .pharmacy-hours.custom {
+            margin-bottom: 6px;
+        }
+        .pharmacy-location.custom {
+            color: #6b7280;
+        }
+        .pharmacy-btn.btn-black {
+            width: 100%;
+            padding: 14px 0;
+            background: #000;
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 500;
+            cursor: pointer;
+            margin-top: 18px;
+            transition: background 0.2s;
+            text-align: center;
+        }
+        .pharmacy-btn.btn-black:hover {
+            background: #222;
+        }
+    </style>
+</head>
+<body>
+    {% include 'header.html' with categories=categories selected_categorie=selected_categorie query=query user=user %}
+    {% block content %}
+    <main>
+        <div class="container">
+            <!-- Selecteur de catégorie -->
+            
+            <!-- Results Header -->
+            <div class="results-header">
+                <div class="search-summary">
+                    <div class="search-info">
+                        <h1>RESULTATS POUR "{{ query }}"</h1>
+                        <div class="search-details">
+                            <i class="fas fa-map-marker-alt"></i> Abomey-Calavi, Atlantique • {{ results_count}} résultat{% if results_count > 1%}s{% endif %} médicament{% if results_count > 1%}s{% endif %} / {{ pharmacies_count }} pharmacie{% if pharmacies_count > 1 %}s{% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pharmacies trouvées -->
+            {% if pharmacies_trouvees and not products_with_pharmacies %}
+                <h2 style="color:#1C8C8C; font-family:'Quicksand',sans-serif; font-size:22px; margin-bottom:12px; display:flex;align-items:center;"><i class="fas fa-clinic-medical" style="margin-right:10px;"></i>Pharmacies trouvées</h2>
+                <div class="products-grid" style="display:flex;flex-wrap:wrap;gap:32px;justify-content:flex-start;padding-left:0;margin-left:0;">
+                    {% for pharmacy in pharmacies_trouvees %}
+                        <div class="pharmacy-card custom">
+                            <div class="pharmacy-image custom">
+                                {% if pharmacy.photo %}
+                                    <img src="{{ pharmacy.photo.url }}" alt="Photo de {{ pharmacy.first_name }} {{ pharmacy.last_name }}">
+                                {% else %}
+                                    <img src="https://via.placeholder.com/400x180?text=Pharmacie" alt="Photo de {{ pharmacy.first_name }} {{ pharmacy.last_name }}">
+                                {% endif %}
+                            </div>
+                            <div class="pharmacy-info custom">
+                                <div class="pharmacy-rating custom">★★★★★</div>
+                                {% if pharmacy.is_on_duty %}
+                                    <span class="badge-garde">De garde</span>
+                                {% else %}
+                                    <span class="badge-garde" style="visibility:hidden;">De garde</span>
+                                {% endif %}
+                                <div class="pharmacy-name custom">{{ pharmacy.first_name }} {{ pharmacy.last_name }}</div>
+                                <div class="pharmacy-hours custom">
+                                    {% if pharmacy.is_open %}
+                                        <span style="color:#22c55e;font-weight:600;">Ouverte</span>
+                                        • Ferme à {{ pharmacy.closing_hours|default:'?' }}
+                                    {% else %}
+                                        <span style="color:#e53e3e;font-weight:600;">Fermée</span>
+                                        • Ouvre à {{ pharmacy.opening_hours|default:'?' }}
+                                    {% endif %}
+                                </div>
+                                <div class="pharmacy-location custom">{{ pharmacy.city }} - {{ pharmacy.address }}</div>
+                                <button class="pharmacy-btn btn-black">Voir les détails &rarr;</button>
+                            </div>
+                        </div>
+                    {% empty %}
+                        <p>Aucune pharmacie trouvée.</p>
+                    {% endfor %}
+                </div>
+            {% elif not products_with_pharmacies and not pharmacies_trouvees %}
+                <div style="color:#e53e3e;font-size:15px;">Aucune pharmacie trouvée pour cette recherche.</div>
+            {% endif %}
+
+            <!-- Products Container -->
+            <div class="products-container" id="productsContainer">
+                {% if products_with_pharmacies %}
+                    {% for prod in products_with_pharmacies %}
+                    <div class="product-card" data-product-id="{{ prod.product.id }}">
+                        <div class="product-content">
+                            <img src="{{ prod.product.photo.url }}" alt="{{ prod.product.name }}" class="product-image">
+                            <div class="product-details">
+                                <div class="product-header">
+                                    <div>
+                                        <h3 class="product-name">{{ prod.product.name }}</h3>
+                                        <span class="product-category">{{ prod.product.category.name }}</span>
+                                    </div>
+                                </div>
+                                <div class="prescription-required">
+                                    {% if prod.product.with_ordonance %}
+                                        <i class="fas fa-prescription-bottle"></i>
+                                        <span>Ordonnance requise</span>
+                                    {% else %}
+                                        <i class="fas fa-prescription-bottle-slash"></i>
+                                        <span>Pas d'ordonnance requise</span>
+                                    {% endif %}
+                                </div>
+                                <p class="product-description">{{ prod.product.description }}</p>
+                                <div class="insurance-info">
+                                    <i class="fas fa-shield-alt"></i>
+                                    <span>Pris en charge par:</span>
+                                    {% for assur in prod.product.insurance.all %}
+                                        <span class="insurance-badge">{{ assur.name }}</span>
+                                    {% empty %}
+                                        <span> Aucune assurance </span>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <div class="product-actions">
+                                <div class="price-section">
+                                    <div class="price">{{ prod.product.price }} FCFA</div>
+                                </div>
+                                <div class="action-buttons">
+                                    {% if prod.product.with_ordonance %}
+                                    <button class="btn btn-upload" onclick="openUploadModal('{{ prod.product.id }}')">
+                                        <i class="fas fa-upload"></i>
+                                        Ordonnance
+                                    </button>
+                                    {% else %}
+                                    <button class="btn btn-primary btn-reserve-interactive" data-product-id="{{ prod.product.id }}">
+                                        <i class="fas fa-shopping-cart"></i>
+                                        Réserver
+                                    </button>
+                                    {% endif %}
+                                    <button class="btn btn-secondary btn-order-interactive" data-product-id="{{ prod.product.id }}">
+                                        <i class="fas fa-shopping-bag"></i>
+                                        Commander
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="pharmacy-info">
+                            {% if prod.pharmacies %}
+                                <div class="pharmacy-name" style="margin-bottom:8px;">Disponible dans&nbsp;:</div>
+                                <div class="pharmacy-list-modern" id="pharmacy-list-{{ prod.product.id }}">
+                                {% for ph in prod.pharmacies %}
+                                    <div class="pharmacy-mini-card" data-product-id="{{ prod.product.id }}" data-pharmacy-id="{{ ph.pharmacy.id }}" data-stock="{{ ph.quantity }}">
+                                        <div class="pharmacy-mini-title">{{ ph.pharmacy.first_name }} {{ ph.pharmacy.last_name }}</div>
+                                        <div class="pharmacy-mini-address">{{ ph.address }}, {{ ph.city }}</div>
+                                        <div class="pharmacy-mini-stock {% if ph.quantity == 0 %}out{% elif ph.quantity <= 5 %}low{% endif %}">Stock : {{ ph.quantity }}</div>
+                                    </div>
+                                {% endfor %}
+                                </div>
+                            {% else %}
+                                <div class="pharmacy-details">
+                                    <span class="stock-status out-of-stock">Aucune pharmacie ne propose ce produit actuellement</span>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% elif not pharmacies_trouvees %}
+                    <p>Aucun produit trouvé</p>
+                {% endif %}
+            </div>
+
+        <!-- Upload Modal -->
+        <div id="uploadModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>Téléverser votre ordonnance</h2>
+                <p>Veuillez téléverser une photo claire de votre ordonnance pour pouvoir réserver ce médicament.</p>
+                
+                <div class="upload-area" id="uploadArea">
+                    <i class="fas fa-cloud-upload-alt" style="font-size: 3rem; color: #ccc; margin-bottom: 15px;"></i>
+                    <p>Cliquez pour sélectionner ou glissez-déposez votre fichier ici</p>
+                    <p style="font-size: 12px; color: #999; margin-top: 10px;">
+                        Formats acceptés: JPG, PNG, PDF (Max 5MB)
+                    </p>
+                </div>
+                
+                <input type="file" id="fileInput" accept=".jpg,.jpeg,.png,.pdf" style="display: none;">
+                
+                <div style="margin-top: 20px; text-align: right;">
+                    <button class="btn btn-secondary" onclick="closeUploadModal()">Annuler</button>
+                    <button class="btn btn-primary" onclick="uploadPrescription()" style="margin-left: 10px;" id="confirmUploadBtn">
+                        <i class="fas fa-check"></i>
+                        Confirmer
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Notification -->
+        <div id="notification" class="notification">
+            <i class="fas fa-check-circle"></i>
+            <span id="notificationText"></span>
+        </div>
+
+        <!-- Pharmacy Modal -->
+        <div id="pharmacyModal" class="modal" style="display:none;">
+            <div class="modal-content" style="max-width:420px;">
+                <span class="close" onclick="closePharmacyModal()">&times;</span>
+                <h2 style="margin-bottom:18px;font-size:1.2rem;">Choisissez la pharmacie pour la réservation</h2>
+                <div id="pharmacyModalList"></div>
+            </div>
+        </div>
+
+        <!-- --- MODALE DE DÉTAILS PRODUIT --- -->
+        <div id="productDetailModal" class="modal" style="display:none;">
+            <div class="modal-content" style="max-width:480px;">
+                <span class="close" onclick="closeProductDetailModal()">&times;</span>
+                <div id="productDetailContent"></div>
+            </div>
+        </div>
+
+        <!-- Modale quantité -->
+        <div id="quantityModal" class="modal" style="display:none;">
+            <div class="modal-content" style="max-width:340px;">
+                <span class="close" onclick="closeQuantityModal()">&times;</span>
+                <h2 style="margin-bottom:18px;font-size:1.1rem;">Réserver dans <span id="modalPharmacyName"></span></h2>
+                <div style="margin-bottom:10px;">Stock disponible : <span id="modalPharmacyStock"></span></div>
+                <form id="quantityForm" onsubmit="submitReservation(event)">
+                    <label for="quantityInput">Quantité à réserver :</label>
+                    <input type="number" id="quantityInput" name="quantity" min="1" value="1" style="width:80px;margin-left:8px;" required>
+                    <input type="hidden" id="modalProductId">
+                    <input type="hidden" id="modalPharmacyId">
+                    <button type="submit" class="btn btn-primary" style="margin-top:14px;width:100%;">Valider la réservation</button>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Variables globales
+        let currentProduct = null;
+        let uploadedFiles = {};
+        let reservationMode = null;
+        let orderMode = null;
+        let selectedProductId = null;
+        let currentAction = null; // 'order' ou 'reservation'
+
+        // Filter functionality
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                // Remove active class from all buttons
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                
+                // Add active class to clicked button
+                this.classList.add('active');
+                
+                // Filter products
+                filterProducts(this.dataset.filter);
+            });
+        });
+
+        function filterProducts(filter) {
+            const products = document.querySelectorAll('.product-card');
+            
+            products.forEach(product => {
+                let show = true;
+                
+                switch(filter) {
+                    case 'in-stock':
+                        show = product.dataset.stock === 'in-stock';
+                        break;
+                    case 'with-insurance':
+                        show = product.dataset.insurance === 'true';
+                        break;
+                    case 'no-prescription':
+                        break;
+                    default:
+                        show = true;
+                }
+                product.style.display = show ? '' : 'none';
+            });
+        }
+
+        // Upload Modal Logic
+        function openUploadModal(productId) {
+            currentProduct = productId;
+            document.getElementById('uploadModal').style.display = 'block';
+            document.getElementById('fileInput').value = '';
+            document.getElementById('uploadArea').classList.remove('dragover');
+        }
+
+        function closeUploadModal() {
+            document.getElementById('uploadModal').style.display = 'none';
+        }
+
+        // Drag & Drop for upload area
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('fileInput');
+
+        uploadArea.addEventListener('click', () => fileInput.click());
+
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragover');
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            if (e.dataTransfer.files.length) {
+                fileInput.files = e.dataTransfer.files;
+            }
+        });
+
+        fileInput.addEventListener('change', () => {
+            // Optionally show file name or preview
+        });
+
+        // Upload prescription logic (mock)
+        function uploadPrescription() {
+            if (!fileInput.files.length) {
+                showNotification("Veuillez sélectionner un fichier à téléverser.");
+                return;
+            }
+            // Simulate upload
+            uploadedFiles[currentProduct] = true;
+            closeUploadModal();
+            showNotification("Ordonnance téléversée avec succès !");
+            // Change button style to uploaded
+            const btn = document.getElementById('upload-btn-' + currentProduct);
+            if (btn) {
+                btn.classList.remove('btn-upload');
+                btn.classList.add('btn-uploaded');
+                btn.innerHTML = '<i class="fas fa-check"></i> Ordonnance envoyée';
+                btn.disabled = true;
+            }
+        }
+
+        // Modal close button
+        document.querySelector('.modal .close').onclick = closeUploadModal;
+
+        // Notification logic
+        function showNotification(message) {
+            const notif = document.getElementById('notification');
+            document.getElementById('notificationText').textContent = message;
+            notif.classList.add('show');
+            setTimeout(() => notif.classList.remove('show'), 3000);
+        }
+
+        // Reserve product (mock)
+        function reserveProduct(productId) {
+            showNotification("Produit réservé avec succès !");
+        }
+
+        // Show details (mock)
+        function showDetails(productId) {
+            showNotification("Affichage des détails du produit.");
+        }
+
+        // Close modal on outside click
+        window.onclick = function(event) {
+            const modal = document.getElementById('uploadModal');
+            if (event.target == modal) {
+                closeUploadModal();
+            }
+        }
+
+        // Redirection automatique lors du changement de catégorie
+        const categorySelect = document.getElementById('categorySelect');
+        if (categorySelect) {
+            categorySelect.addEventListener('change', function() {
+                const catId = this.value;
+                if (catId) {
+                    window.location.href = `/search/?categorie=${catId}`;
+                } else {
+                    window.location.href = `/search/`;
+                }
+            });
+        }
+
+        function reserveProductForPharmacy(productId, pharmacyId) {
+            showNotification("Produit réservé dans la pharmacie sélectionnée !");
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Pour chaque select de pharmacie
+            document.querySelectorAll('.pharmacy-select').forEach(function(select) {
+                var productId = select.id.replace('pharmacy-select-', '');
+                function showPharmacyDetails(index) {
+                    var data = window.pharmaciesData[productId][index];
+                    var html = `<div style='background:#f8f9fa;border-radius:10px;padding:14px 18px;box-shadow:0 2px 8px rgba(44,62,80,0.07);'>
+                        <div style='display:flex;align-items:center;gap:8px;'>
+                            <i class='fas fa-clinic-medical' style='color:#1C8C8C;'></i>
+                            <span style='font-weight:600;font-size:16px;color:#277e75;'>${data.name}</span>
+                            ${data.is_on_duty === true ? "<span style='background:#34AC4F;color:#fff;padding:2px 8px;border-radius:8px;font-size:11px;margin-left:6px;'>De garde</span>" : ""}
+                        </div>
+                        <div style='font-size:13px;color:#666;display:flex;align-items:center;gap:6px;margin-top:4px;'>
+                            <i class='fas fa-map-marker-alt'></i> ${data.address}, ${data.city}
+                        </div>
+                        <div style='font-size:13px;display:flex;align-items:center;gap:6px;margin-top:4px;'>
+                            <span class='stock-status' style='font-weight:500;color:${data.quantity > 10 ? '#34AC4F' : (data.quantity > 0 ? '#FF9800' : '#e53e3e')};'>
+                                ${data.quantity > 10 ? "<i class='fas fa-check-circle'></i>" : (data.quantity > 0 ? "<i class='fas fa-exclamation-circle'></i>" : "<i class='fas fa-times-circle'></i>")}
+                                ${data.quantity} en stock
+                            </span>
+                        </div>
+                        <div style='margin-top:8px;display:flex;gap:8px;'>
+                            <button class='btn btn-primary' style='padding:7px 18px;font-size:13px;' onclick="reserveProductForPharmacy('${productId}', '${data.id}')">
+                                <i class='fas fa-shopping-cart'></i> Réserver ici
+                            </button>
+                            <a href='tel:${data.tel}' class='btn btn-outline' style='padding:7px 18px;font-size:13px;'><i class='fas fa-phone'></i> Appeler</a>
+                        </div>
+                    </div>`;
+                    document.getElementById('pharmacy-details-' + productId).innerHTML = html;
+                }
+                // Par défaut, rien n'est affiché
+                document.getElementById('pharmacy-details-' + productId).innerHTML = '';
+                select.addEventListener('change', function() {
+                    if(this.value !== '') {
+                        showPharmacyDetails(this.value);
+                    } else {
+                        document.getElementById('pharmacy-details-' + productId).innerHTML = '';
+                    }
+                });
+            });
+
+            // Animation JS sur l'image produit au hover
+            document.querySelectorAll('.product-image').forEach(function(img) {
+                img.addEventListener('mouseenter', function() {
+                    img.classList.add('img-animate');
+                });
+                img.addEventListener('mouseleave', function() {
+                    img.classList.remove('img-animate');
+                });
+            });
+        });
+
+        // --- MODALE DE SÉLECTION DE PHARMACIE ---
+        function openPharmacyModal(productId) {
+            var pharmacies = window.pharmaciesData[productId];
+            var listHtml = '';
+            if (!pharmacies || pharmacies.length === 0) {
+                listHtml = "<div style='color:#e53e3e;'>Aucune pharmacie ne propose ce produit actuellement.</div>";
+            } else {
+                pharmacies.forEach(function(ph, idx) {
+                    listHtml += `<div style='background:#f8f9fa;border-radius:10px;padding:12px 16px;margin-bottom:10px;box-shadow:0 2px 8px rgba(44,62,80,0.07);display:flex;flex-direction:column;gap:4px;'>
+                        <div style='font-weight:600;font-size:15px;color:#277e75;display:flex;align-items:center;gap:8px;'>
+                            <i class='fas fa-clinic-medical' style='color:#1C8C8C;'></i> ${ph.name}
+                            ${ph.is_on_duty === true ? "<span style='background:#34AC4F;color:#fff;padding:2px 8px;border-radius:8px;font-size:11px;margin-left:6px;'>De garde</span>" : ""}
+                        </div>
+                        <div style='font-size:13px;color:#666;'><i class='fas fa-map-marker-alt'></i> ${ph.address}, ${ph.city}</div>
+                        <div style='font-size:13px;'><span class='stock-status' style='font-weight:500;color:${ph.quantity > 10 ? '#34AC4F' : (ph.quantity > 0 ? '#FF9800' : '#e53e3e')};'>${ph.quantity} en stock</span></div>
+                        <button class='btn btn-primary' style='margin-top:8px;width:100%;' onclick="reserveProductForPharmacy('${productId}', '${ph.id}')"><i class='fas fa-shopping-cart'></i> Réserver ici</button>
+                    </div>`;
+                });
+            }
+            document.getElementById('pharmacyModalList').innerHTML = listHtml;
+            document.getElementById('pharmacyModal').style.display = 'block';
+        }
+        function closePharmacyModal() {
+            document.getElementById('pharmacyModal').style.display = 'none';
+        }
+        // Fermer la modale si on clique en dehors
+        window.onclick = function(event) {
+            var modal = document.getElementById('pharmacyModal');
+            if (event.target == modal) {
+                closePharmacyModal();
+            }
+        }
+        // Remplacer tous les boutons Réserver principaux pour ouvrir la modale
+        // (On suppose que le bouton a : onclick="openPharmacyModal('{{ prod.product.id }}')")
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.btn-reserve-interactive').forEach(function(btn) {
+                btn.addEventListener('click', function(e) {
+                    selectedProductId = btn.getAttribute('data-product-id');
+                    currentAction = 'reservation';
+                    var cards = Array.from(document.querySelectorAll('.pharmacy-mini-card[data-product-id="' + selectedProductId + '"]'));
+                    var cardsWithStock = cards.filter(function(card) {
+                        return parseInt(card.getAttribute('data-stock')) > 0;
+                    });
+                    if(cardsWithStock.length === 1) {
+                        openQuantityModal(cardsWithStock[0], parseInt(cardsWithStock[0].getAttribute('data-stock')));
+                    } else if(cardsWithStock.length > 1) {
+                        reservationMode = true;
+                        alert("Veuillez cliquer sur la pharmacie dans laquelle vous souhaitez réserver le produit.");
+                        cardsWithStock.forEach(function(card) {
+                            card.classList.add('selectable');
+                        });
+                        // Ajout du gestionnaire de clic pour chaque carte de pharmacie
+                        cardsWithStock.forEach(function(card) {
+                            card.addEventListener('click', function handler() {
+                                if (reservationMode) {
+                                    openQuantityModal(card, parseInt(card.getAttribute('data-stock')));
+                                    reservationMode = false;
+                                    // Retirer la classe selectable de toutes les cartes
+                                    cardsWithStock.forEach(function(c) { c.classList.remove('selectable'); });
+                                    // Nettoyer le gestionnaire pour éviter les doublons
+                                    card.removeEventListener('click', handler);
+                                }
+                            });
+                        });
+                    } else {
+                        alert("Aucune pharmacie ne propose ce produit en stock.");
+                    }
+                });
+            });
+        });
+
+        // --- MODALE DE DÉTAILS PRODUIT ---
+        function openProductDetailModal(productId) {
+            // Récupérer les infos du produit depuis le DOM (ou window.productsData si tu veux)
+            var card = document.querySelector('.product-card[data-product-id="' + productId + '"]');
+            if (!card) return;
+            var img = card.querySelector('.product-image').src;
+            var name = card.querySelector('.product-name').textContent;
+            var category = card.querySelector('.product-category').textContent;
+            var description = card.querySelector('.product-description').textContent;
+            var price = card.querySelector('.price').textContent;
+            var ordonnance = card.querySelector('.prescription-required span').textContent;
+            var assurances = [];
+            card.querySelectorAll('.insurance-badge').forEach(function(b){ assurances.push(b.textContent); });
+            var html = `<div style='text-align:center;'>
+                <img src='${img}' alt='${name}' style='width:180px;height:180px;object-fit:cover;border-radius:14px;box-shadow:0 4px 16px rgba(44,62,80,0.10);margin-bottom:12px;'>
+                <h2 style='font-size:1.3rem;margin-bottom:6px;'>${name}</h2>
+                <div style='color:#1C8C8C;font-size:14px;margin-bottom:8px;'>${category}</div>
+                <div style='font-size:15px;color:#444;margin-bottom:10px;'>${description}</div>
+                <div style='font-size:16px;font-weight:600;color:#28a745;margin-bottom:8px;'>${price}</div>
+                <div style='font-size:13px;margin-bottom:8px;'><strong>Ordonnance :</strong> ${ordonnance}</div>
+                <div style='font-size:13px;margin-bottom:8px;'><strong>Assurances :</strong> ${assurances.length ? assurances.join(', ') : 'Aucune'}</div>
+            </div>`;
+            document.getElementById('productDetailContent').innerHTML = html;
+            document.getElementById('productDetailModal').style.display = 'block';
+        }
+        function closeProductDetailModal() {
+            document.getElementById('productDetailModal').style.display = 'none';
+        }
+        // Fermer la modale si on clique en dehors
+        window.onclick = function(event) {
+            var modal = document.getElementById('productDetailModal');
+            if (event.target == modal) {
+                closeProductDetailModal();
+            }
+            // Gérer aussi la modale pharmacie
+            var pharmacyModal = document.getElementById('pharmacyModal');
+            if (event.target == pharmacyModal) {
+                closePharmacyModal();
+            }
+        }
+        // Adapter le bouton Détails pour ouvrir la modale
+
+        // Modale quantité
+        function openQuantityModal(card, stock) {
+            document.getElementById('modalPharmacyName').textContent = card.querySelector('.pharmacy-mini-title').textContent;
+            document.getElementById('modalPharmacyStock').textContent = stock;
+            document.getElementById('quantityInput').max = stock;
+            document.getElementById('quantityInput').value = 1;
+            document.getElementById('modalProductId').value = card.getAttribute('data-product-id');
+            document.getElementById('modalPharmacyId').value = card.getAttribute('data-pharmacy-id');
+            document.getElementById('quantityModal').style.display = 'block';
+        }
+        function closeQuantityModal() {
+            document.getElementById('quantityModal').style.display = 'none';
+        }
+        function setButtonState(productId, pharmacyId, action, state) {
+            // action: 'order' ou 'reservation', state: 'default' ou 'cancel'
+            let btn;
+            if(action === 'order') {
+                btn = document.querySelector('.btn-order-interactive[data-product-id="' + productId + '"]');
+            } else {
+                btn = document.querySelector('.btn-reserve-interactive[data-product-id="' + productId + '"]');
+            }
+            if(!btn) return;
+            if(state === 'cancel') {
+                btn.textContent = 'Annuler';
+                btn.classList.add('btn-cancel');
+                btn.onclick = function() { cancelAction(productId, pharmacyId, action, btn); };
+            } else {
+                // Remettre le texte d'origine
+                if(action === 'order') {
+                    btn.innerHTML = '<i class="fas fa-shopping-bag"></i> Commander';
+                } else {
+                    btn.innerHTML = '<i class="fas fa-shopping-cart"></i> Réserver';
+                }
+                btn.classList.remove('btn-cancel');
+                btn.onclick = null;
+            }
+        }
+        function cancelAction(productId, pharmacyId, action, btn) {
+            let url = (action === 'order') ? '/annuler_commande/' : '/annuler_reservation/';
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: `produit_id=${productId}&pharmacie_id=${pharmacyId}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                if(data.success) {
+                    showNotification(data.message);
+                    setButtonState(productId, pharmacyId, action, 'default');
+                    // Optionnel : rétablir le stock en front (à recharger pour cohérence)
+                    // window.location.reload();
+                } else {
+                    showNotification(data.error || 'Erreur lors de l\'annulation.');
+                }
+            })
+            .catch(() => {
+                showNotification('Erreur réseau.');
+            });
+        }
+        // Adapter la soumission pour la commande ou la réservation
+        function submitReservation(e) {
+            e.preventDefault();
+            const qty = document.getElementById('quantityInput').value;
+            const productId = document.getElementById('modalProductId').value;
+            const pharmacyId = document.getElementById('modalPharmacyId').value;
+            closeQuantityModal();
+            let url = '';
+            let successMsg = '';
+            if(currentAction === 'order') {
+                url = '/commander/';
+                successMsg = "Commande de " + qty + " unité(s) effectuée ! (Produit " + productId + ", Pharmacie " + pharmacyId + ")";
+            } else {
+                url = '/reserver/';
+                successMsg = "Réservation de " + qty + " unité(s) effectuée ! (Produit " + productId + ", Pharmacie " + pharmacyId + ")";
+            }
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: `produit_id=${productId}&pharmacie_id=${pharmacyId}&quantite=${qty}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                if(data.success) {
+                    showNotification(successMsg);
+                    setButtonState(productId, pharmacyId, currentAction, 'cancel');
+                } else {
+                    showNotification(data.error || 'Erreur lors de la commande/réservation.');
+                }
+            })
+            .catch(() => {
+                showNotification('Erreur réseau.');
+            });
+        }
+        // Fonction utilitaire pour CSRF
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+    </script>
+    {% endblock %}
+</body>
+</html>

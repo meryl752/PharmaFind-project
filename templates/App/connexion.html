@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Connexion</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --primary-color: #28a745;
+      --text-color: #333;
+      --bg-color: #f8f9fa;
+      --input-radius: 4px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: var(--bg-color);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 1rem;
+    }
+
+    .form-container {
+      background-color: white;
+      border: 1px  ;
+      border-radius: 8px;
+      padding: 1rem 1.2rem;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    .form-container h2 {
+      color:#333;
+      margin-bottom: 1rem;
+      font-size: 1.3rem;
+    
+    }
+
+    .form-group {
+      margin-bottom: 0.6rem;
+    }
+
+    label {
+      font-size: 0.8rem;
+      color: var(--text-color);
+      margin-bottom: 0.2rem;
+      display: block;
+    }
+
+    input {
+      width: 100%;
+      padding: 0.4rem 0.6rem;
+      font-size: 0.85rem;
+      border: 1px solid #ccc;
+      border-radius: var(--input-radius);
+    }
+
+    button {
+      width: 100%;
+      padding: 0.55rem;
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      border-radius: var(--input-radius);
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      margin-top: 0.5rem;
+    }
+
+    button:hover {
+      background-color: #218838;
+    }
+
+    .alert-info {
+      margin: 0.8rem 0;
+      padding: 0.5rem 0.8rem;
+      background-color: #dff7f2;
+      border: 1px solid #b8e5dd;
+      color: #155e57;
+      border-radius: 4px;
+      font-size: 0.85rem;
+      text-align: center;
+    }
+
+    footer {
+      margin-top: 2rem;
+      text-align: center;
+      font-size: 0.75rem;
+      color: #666;
+      border-top: 1px solid #ddd;
+      padding-top: 0.5rem;
+    }
+
+    @media (max-width: 500px) {
+      .form-container {
+        padding: 0.8rem 1rem;
+      }
+    }
+
+    .login-link {
+  text-align: center;
+  margin-top: 15px;
+  font-size: 13px;
+}
+
+.login-link a {
+  color: #28a745;
+  font-weight: 500;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.login-link a:hover {
+  color: #1e7e34;
+  text-decoration: underline;
+}
+
+  </style>
+</head>
+<body>
+
+  {% block content %}
+
+
+  <div class="form-container">
+    <h2>Connectez vous</h2>
+    
+    <form id="loginForm" method="POST" action="{% url 'connexion' %}">
+        {% csrf_token %}
+
+      <div class="form-group">
+        <label for="{{ form.email.id_for_label }}">email</label>
+          {{ form.email }}
+          {% if form.email.errors %}
+            {% for error in form.email.errors %}
+              <p style="color:red; font-size:0.5rem; margin-top:0.2rem;">{{ error }}</p>
+            {% endfor %}
+          {% endif %}
+      </div>
+
+      <div class="form-group">
+        <label for="{{ form.password.id_for_label }}">Mot de passe</label>
+          {{ form.password }}
+          {% if form.password.errors %}
+            {% for error in form.password.errors %}
+              <p style="color:red; font-size:0.5rem; margin-top:0.2rem;">{{ error }}</p>
+            {% endfor %}
+          {% endif %}
+      </div>
+
+        {% if form.non_field_errors %}
+          {% for error in form.non_field_errors %}
+        
+            <p style="color:red; font-weight: 200; margin-top: 0.5rem;font-size:0.7rem;">{{ error }}</p>
+          {% endfor %}
+        {% endif %}
+
+      <button type="submit">Se connecter</button>
+
+      <div class="login-link">
+            <p>Vous n'avez pas de compte ? <a href="{% url 'Ins'%}" id="loginLink">créer un compte</a></p>
+        </div>
+
+
+    </form>
+  </div>
+  {% endblock %}
+
+  <footer>
+    &copy; 2025 PharmaFind. Tous droits réservés.
+  </footer>
+
+</body>
+</html>

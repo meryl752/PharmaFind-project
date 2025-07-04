@@ -1,0 +1,121 @@
+<div class="results-header">
+    <div class="search-summary">
+        <div class="search-info">
+            <h1>RESULTATS POUR "{{ query }}"</h1>
+            <div class="search-details">
+                <i class="fas fa-map-marker-alt"></i> Abomey-Calavi, Atlantique • {{ results_count}} résultat{% if results_count > 1%}s{% endif %} médicament{% if results_count > 1%}s{% endif %} / {{ pharmacies_count }} pharmacie{% if pharmacies_count > 1 %}s{% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Pharmacies trouvées -->
+<div style="margin-bottom: 32px;">
+    <h2 style="color:#1C8C8C; font-family:'Quicksand',sans-serif; font-size:22px; margin-bottom:12px; display:flex;align-items:center;"><i class="fas fa-clinic-medical" style="margin-right:10px;"></i>Pharmacies trouvées</h2>
+    {% if pharmacies_trouvees %}
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:18px;">
+            {% for pharmacy in pharmacies_trouvees %}
+            <div style="background:#e8f5e9;border-radius:14px;padding:18px 22px;box-shadow:0 2px 8px rgba(44,62,80,0.08);margin-bottom:0;">
+                <div style="display:flex;align-items:center;gap:12px;">
+                    <div style="background:#1C8C8C;color:#fff;width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;">
+                        {{ pharmacy.first_name|slice:':1'|upper }}{{ pharmacy.last_name|slice:':1'|upper }}
+                    </div>
+                    <div>
+                        <div style="font-weight:600;font-size:18px;color:#277e75;">{{ pharmacy.first_name }} {{ pharmacy.last_name }}</div>
+                        <div style="font-size:13px;color:#666;">{{ pharmacy.city }} - {{ pharmacy.address }}</div>
+                        <div style="font-size:13px;color:#1C8C8C;">{{ pharmacy.email }}</div>
+                    </div>
+                </div>
+                <div style="margin-top:10px;font-size:13px;">
+                    {% if pharmacy.is_on_duty %}
+                        <span style="background:#34AC4F;color:#fff;padding:3px 10px;border-radius:8px;font-size:12px;">De garde</span>
+                    {% endif %}
+                    {% if pharmacy.is_open %}
+                        <span style="color:#22c55e;font-weight:600;margin-left:10px;">Ouverte</span>
+                        <span style="color:#888;">• Ferme à {{ pharmacy.closing_hours|default:'?' }}</span>
+                    {% else %}
+                        <span style="color:#e53e3e;font-weight:600;margin-left:10px;">Fermée</span>
+                        <span style="color:#888;">• Ouvre à {{ pharmacy.opening_hours|default:'?' }}</span>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div style="color:#e53e3e;font-size:15px;">Aucune pharmacie trouvée pour cette recherche.</div>
+    {% endif %}
+</div>
+<!-- Produits trouvés -->
+<div class="products-container" id="productsContainer">
+    {% for product in products %}
+    <div class="product-card" 
+        data-category="{{ product.category.name}}" 
+        data-stock="in-stock" 
+        data-insurance="{% if product.assurance.all %} true {% else %} false {% endif %}" 
+        data-prescription="{{ product.with_insurance|yesno:'true,false'}} ">
+        <div class="product-content">
+            <img src="{{product.photo.url }} " alt=" {{product.name}}" class="product-image">
+            <div class="product-details">
+                <div class="product-header">
+                    <div>
+                        <h3 class="product-name">{{ product.name}}</h3>
+                        <span class="product-category">{{ product.category.name}}</span>
+                    </div>
+                </div>
+                <div class="prescription-required">
+                    {% if product.with_ordonance %}
+                        <i class="fas fa-prescription-bottle"></i>
+                        <span>Ordonnance requise</span>
+                    {% else %}
+                        <i class="fas fa-prescription-bottle-slash"></i>
+                        <span>Pas d'ordonnance requise</span>
+                    {% endif %}
+                </div>
+                <p class="product-description">
+                    {{ product.description }}
+                </p>
+                <div class="insurance-info">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>Pris en charge par:</span>
+                    {% for assur in product.insurance.all %}
+                        <span class="insurance-badge">{{ assur.name }}</span>
+                    {% empty %}    
+                        <span> Aucune assurance </span>
+                    {% endfor %}    
+                </div>
+            </div>
+            <div class="product-actions">
+                <div class="price-section">
+                    <div class="price"> {{ product.price}} FCFA</div>
+                </div>
+                <div class="action-buttons">
+                    {% if product.with_ordonance %}
+                    <button class="btn btn-upload" onclick="openUploadModal('{{ product.id }}')">
+                        <i class="fas fa-upload"></i>
+                        Ordonnance
+                    </button>
+                    {% else %}
+                    <button class="btn btn-primary" onclick="reserveProduct('{{ product.id }}')">
+                        <i class="fas fa-shopping-cart"></i>
+                        Réserver
+                    </button>
+                    {% endif %}
+                    <button class="btn btn-secondary" onclick="showDetails('{{ product.id }}')">
+                        <i class="fas fa-info-circle"></i>
+                        Détails
+                    </button>    
+                </div>
+            </div>
+        </div>
+        <div class="pharmacy-info">
+            <div class="pharmacy-name">Pharmacie du Centre</div>
+            <div class="pharmacy-details">
+                <span><i class="fas fa-map-marker-alt"></i> Rue des Pharmacies, Abomey-Calavi</span>
+                <span class="distance">0.5 km</span>
+                <span class="stock-status in-stock">En stock (15)</span>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <p>Aucun produit trouvé</p>
+    {% endfor %}
+</div> 

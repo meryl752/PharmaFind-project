@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Connexion - PharmaFind</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body, html {
+  height: 100%;
+  font-family: 'Poppins', sans-serif;
+  background-color: #EAF5EE;
+}
+
+.container {
+  display: flex;
+  height: 100vh;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.main-content {
+  display: flex;
+  background-color: white;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  max-width: 900px;
+  width: 100%;
+  height: 500px;
+}
+
+/* Partie gauche : logo */
+.left {
+  flex: 1;
+  background-color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-right: 1px solid #eee;
+}
+
+.logo {
+  text-align: center;
+}
+
+.logo-text {
+  font-size: 40px;
+  color: #2DA85D;
+  font-weight: 600;
+}
+
+/* Partie droite : formulaire */
+.right {
+  flex: 1;
+  background-color: #EAF5EE;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  padding: 40px;
+  position: relative;
+  height: 100%;
+}
+
+.right h1 {
+  font-size: 20px;
+  margin-bottom: 25px;
+  color: #1d1d1d;
+  text-align: left;
+  margin-top: 0;
+}
+
+.form-vertical-center {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 100%;
+}
+
+.form-box {
+  width: 100%;
+  max-width: 400px;
+  text-align: left;
+  margin: 0 auto;
+}
+
+.form-box h2 {
+  font-size: 12px;
+  font-weight: 300;
+  margin-bottom: 15px;
+  color: #000;
+  text-align: left;
+  margin-top: 0;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+form input {
+  padding: 12px;
+  /* border-radius: 6px; */
+  border: 1px solid #ddd;
+  border-left: none;
+  border-right: none;
+  border-top: none;
+  margin-bottom: 20px;
+  font-size: 16px;
+  width: 340px;
+  max-width: 100%;
+  outline: none;
+  transition: border-bottom 0.3s ease;
+}
+
+form input:focus {
+  border-bottom: 1px solid #2DA85D;
+  border-left: none;
+  border-right: none;
+  border-top: none;
+}
+
+form button {
+  padding: 14px;
+  background-color: #00994C;
+  color: white;
+  border: none;
+  font-weight: bold;
+  font-size: 15px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  width: 340px;
+  max-width: 100%;
+}
+
+form button:hover {
+  background-color: #007f3e;
+}
+
+.register {
+  margin-top: auto;
+  font-size: 14px;
+  color: #333;
+  text-align: left;
+  align-self: flex-start;
+  position: absolute;
+  bottom: 40px;
+  left: 40px;
+}
+
+.register a {
+  color: #00994C;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="main-content">
+      <!-- Partie gauche -->
+      <div class="left">
+        <div class="logo">
+          <div class="logo-text">PharmaFind</div>
+        </div>
+      </div>
+
+      <!-- Partie droite -->
+
+      {% block content %}
+      <div class="right">
+        <h1>Bienvenue dans <strong>PharmaFind</strong></h1>
+        <div class="form-vertical-center">
+          <div class="form-box">
+            <h2>CONNEXION</h2>
+            <form id="loginForm" method="POST" action="{% url 'pharmacy_connection' %}">
+              {% csrf_token %}
+              <label for="{{ form.email.id_for_label }}">Email</label>
+              {{ form.email }}
+              {% if form.email.errors %}
+                {% for error in form.email.errors %}
+                  <p style="color:red; font-size:0.8em;">{{ error }}</p>
+                {% endfor %}
+              {% endif %}
+
+              <label for="{{ form.password.id_for_label }}">Mot de passe</label>
+              {{ form.password }}
+              {% if form.password.errors %}
+                {% for error in form.password.errors %}
+                  <p style="color:red; font-size:0.8em;">{{ error }}</p>
+                {% endfor %}
+              {% endif %}
+
+              {% if form.non_field_errors %}
+                {% for error in form.non_field_errors %}
+                  <p style="color:red;">{{ error }}</p>
+                {% endfor %}
+              {% endif %}
+              {% if error %}
+                <p style="color:red;">{{ error }}</p>
+              {% endif %}
+              <button type="submit">SE CONNECTER</button>
+            </form>
+          </div>
+        </div>
+        <p class="register">Vous n'avez pas de compte ? <a href="#">Inscrivez vous</a></p>
+      </div>
+    </div>
+  </div>
+  {% endblock %}
+
+  
+</body>
+</html>
