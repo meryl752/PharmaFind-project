@@ -1,0 +1,1143 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pharmacie - Produits</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8f9fa;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            background-color: #e8f5e8;
+            padding: 20px 0;
+            border-right: 1px solid #d4edda;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            padding: 0 20px 30px;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background-color: #28a745;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 18px;
+            margin-right: 10px;
+        }
+
+        .logo-text {
+            font-size: 12px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .nav-menu {
+            list-style: none;
+        }
+
+        .nav-item {
+            margin-bottom: 5px;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            text-decoration: none;
+            color: #495057;
+            font-size: 14px;
+            transition: background-color 0.2s;
+        }
+
+        .nav-link:hover {
+            background-color: #d4edda;
+        }
+
+        .nav-link.active {
+            background-color: #d4edda;
+            color: #28a745;
+            font-weight: 500;
+        }
+
+        .nav-icon {
+            width: 16px;
+            height: 16px;
+            margin-right: 12px;
+            opacity: 0.7;
+            font-size: 16px;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            background-color: white;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            flex-direction: column;
+            padding: 20px 30px;
+            border-bottom: 1px solid #e9ecef;
+            flex-shrink: 0;
+        }
+
+        .header-section-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .header-section-top h1 {
+            color: #333;
+            font-size: 24px;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .header-separator-horizontal {
+            width: 100%;
+            height: 1px;
+            background-color: #90EE90;
+            margin: 0 0 15px 0;
+        }
+
+        .header-section-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .header-right-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .header-info p {
+            color: #6c757d;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin: 0;
+        }
+
+        .print-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px;
+        }
+
+        .print-icon {
+            width: 20px;
+            height: 20px;
+            opacity: 0.6;
+            font-size: 20px;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #6c757d;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+        }
+
+        .user-name {
+            color: #495057;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        /* Search and Content */
+        .content-section {
+            padding: 20px 30px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .search-container {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .search-input {
+            width: 150px;
+            padding: 12px 16px 12px 45px;
+            border: 1px solid #e9ecef;
+            border-radius: 5px;
+            font-size: 11px;
+            outline: none;
+            transition: border-color 0.2s;
+            background-color: #EAF5EE;
+        }
+
+        .search-input:focus {
+            border-color: #28a745;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 16px;
+            height: 16px;
+            opacity: 0.5;
+            font-size: 16px;
+        }
+
+        .stock-alert {
+            color: #dc3545;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        /* Table */
+        .table-container {
+            overflow-x: auto;
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        .table {
+            width: 100%;
+            min-width: 1200px;
+            border-collapse: collapse;
+        }
+
+        .table th {
+            background-color: transparent;
+            padding: 16px 12px;
+            text-align: center;
+            font-size: 12px;
+            font-weight: 600;
+            color: #495057;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid #e9ecef;
+            white-space: nowrap;
+        }
+
+        .table td {
+            padding: 16px 12px;
+            border-bottom: 1px solid #f1f3f4;
+            font-size: 14px;
+            color: #495057;
+            white-space: nowrap;
+            text-align: center;
+        }
+
+        .table tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        .status-icons {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .status-icon {
+            width: 10px;
+            height: 10px;
+            font-size: 10px;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .status-edit {
+            color: #6faff4;
+        }
+
+        .status-edit:hover {
+            color: #6fb1f8;
+        }
+
+        .status-delete {
+            color: #fe6978;
+        }
+
+        .status-delete:hover {
+            color: #f86f7d;
+        }
+
+        /* Pagination */
+        .pagination-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 30px;
+            border-top: 1px solid #e9ecef;
+            flex-shrink: 0;
+        }
+
+        .pagination {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .page-btn {
+            width: 32px;
+            height: 32px;
+            border: 1px solid #dee2e6;
+            background: white;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 12px;
+            color: #495057;
+            transition: all 0.2s;
+        }
+
+        .page-btn:hover {
+            border-color: #28a745;
+            color: #28a745;
+        }
+
+        .page-btn.active {
+            background-color: #28a745;
+            border-color: #28a745;
+            color: white;
+        }
+
+        .page-info {
+            color: #6c757d;
+            font-size: 14px;
+        }
+
+        .print-button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .print-button:hover {
+            background-color: #218838;
+        }
+
+        .header-section-bottom h1 {
+            color: #333;
+            font-size: 20px;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        /* Styles pour la page Vente */
+        .search-section {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .client-input {
+            width: 200px;
+            padding: 8px 15px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            font-size: 14px;
+            background-color: #f8f9fa;
+        }
+
+        .product-search {
+            position: relative;
+        }
+
+        .product-input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .product-input:focus {
+            border-color: #28a745;
+        }
+
+        .dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid #ced4da;
+            border-top: none;
+            border-radius: 0 0 4px 4px;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 1000;
+        }
+
+        .dropdown-item {
+            padding: 10px 15px;
+            cursor: pointer;
+            font-size: 14px;
+            border-bottom: 1px solid #f1f3f4;
+            transition: background-color 0.2s;
+        }
+
+        .dropdown-item:hover {
+            background-color: #f8f9fa;
+        }
+
+        .dropdown-item.selected {
+            background-color: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .dropdown-item.highlighted {
+            background-color: #c3f0ca;
+            color: #155724;
+        }
+
+        .table-section {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .delete-btn {
+            background: none;
+            border: none;
+            color: #dc3545;
+            cursor: pointer;
+            font-size: 16px;
+            padding: 4px;
+        }
+
+        .delete-btn:hover {
+            color: #c82333;
+        }
+
+        .summary-section {
+            margin-top: 20px;
+            padding: 20px;
+            border: 2px solid #28a745;
+            border-radius: 8px;
+            background-color: #f8fff9;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .summary-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .summary-label {
+            font-size: 14px;
+            font-weight: 500;
+            color: #495057;
+        }
+
+        .summary-value {
+            font-size: 14px;
+            font-weight: 600;
+            color: #495057;
+        }
+
+        .action-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-success {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background-color: #218838;
+        }
+
+        .btn-outline-success {
+            background-color: transparent;
+            color: #28a745;
+            border: 1px solid #28a745;
+        }
+
+        .btn-outline-success:hover {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .btn-danger {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background-color: #c82333;
+        }
+
+        /* Styles pour la page Commandes */
+        .search-wrapper {
+            position: relative;
+            width: 320px;
+        }
+
+        .search-input-commandes {
+            width: 100%;
+            padding: 12px 16px 12px 44px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #4a5568;
+            background-color: #ffffff;
+            transition: all 0.15s ease;
+        }
+
+        .search-input-commandes:focus {
+            outline: none;
+            border-color: #28a745;
+            box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.1);
+        }
+
+        .search-input-commandes::placeholder {
+            color: #a0aec0;
+        }
+
+        .search-icon-commandes {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 18px;
+            height: 18px;
+            color: #a0aec0;
+        }
+
+        .table-container-commandes {
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+        }
+
+        .table-commandes {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .table-commandes th {
+            background-color: #f7fafc;
+            padding: 16px 20px;
+            text-align: left;
+            font-size: 13px;
+            font-weight: 600;
+            color: #4a5568;
+            border-bottom: 1px solid #e2e8f0;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .table-commandes td {
+            padding: 18px 20px;
+            font-size: 14px;
+            color: #2d3748;
+            border-bottom: 1px solid #f1f5f9;
+            vertical-align: top;
+        }
+
+        .table-commandes tbody tr:hover {
+            background-color: rgba(40, 167, 69, 0.02);
+        }
+
+        .table-commandes tr:last-child td {
+            border-bottom: none;
+        }
+
+        .client-info {
+            line-height: 1.4;
+        }
+
+        .date-info {
+            line-height: 1.4;
+            font-weight: 500;
+        }
+
+        .status-badge {
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-align: center;
+            min-width: 85px;
+            display: inline-block;
+        }
+
+        .status-pending {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .status-in-progress {
+            background-color: #fbbf24;
+            color: white;
+        }
+
+        .status-delivered {
+            background-color: #06b6d4;
+            color: white;
+        }
+
+        .amount {
+            font-weight: 600;
+            color: #1a202c;
+        }
+
+        .pagination-container-commandes {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 24px;
+            background-color: #ffffff;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .pagination-info {
+            font-size: 14px;
+            color: #718096;
+            font-weight: 500;
+        }
+
+        .pagination-controls {
+            display: flex;
+            align-items: center;
+        }
+
+        .pagination-commandes {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-right: 20px;
+        }
+
+        .pagination-btn {
+            width: 36px;
+            height: 36px;
+            border: 1px solid #e2e8f0;
+            background-color: #ffffff;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 14px;
+            color: #4a5568;
+            transition: all 0.15s ease;
+            font-weight: 500;
+        }
+
+        .pagination-btn:hover {
+            background-color: #f7fafc;
+            border-color: #cbd5e0;
+        }
+
+        .pagination-btn.active {
+            background-color: #28a745;
+            color: white;
+            border-color: #28a745;
+        }
+
+        .print-btn-commandes {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .print-btn-commandes:hover {
+            background-color: #22c55e;
+            transform: translateY(-1px);
+        }
+
+        /* Styles pour la page d'Accueil */
+        .welcome-section {
+            padding: 40px 0;
+            text-align: center;
+        }
+
+        .welcome-title {
+            font-size: 36px;
+            font-weight: 700;
+            color: #1a202c;
+            margin-bottom: 16px;
+        }
+
+        .welcome-subtitle {
+            font-size: 18px;
+            color: #718096;
+            margin-bottom: 48px;
+            font-weight: 400;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 24px;
+            margin-bottom: 48px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 24px;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            border-color: #28a745;
+        }
+
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #28a745, #20c997);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 20px;
+            color: white;
+            font-size: 24px;
+        }
+
+        .stat-content {
+            flex: 1;
+            text-align: left;
+        }
+
+        .stat-number {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1a202c;
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #718096;
+            font-weight: 500;
+        }
+
+        .quick-actions {
+            margin-top: 48px;
+        }
+
+        .quick-actions h2 {
+            font-size: 24px;
+            font-weight: 600;
+            color: #1a202c;
+            margin-bottom: 24px;
+        }
+
+        .action-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .action-btn {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            border: none;
+            padding: 16px 24px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(40, 167, 69, 0.3);
+        }
+
+        .action-btn i {
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="logo">
+            <div class="logo-text">PharmaFind</div>
+        </div>
+        
+        <ul class="nav-menu">
+            <li class="nav-item">
+                <a href="#" class="nav-link active" data-page="accueil">
+                    <i class="fas fa-home nav-icon"></i>
+                    Accueil
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link" data-page="produits">
+                    <i class="fas fa-pills nav-icon"></i>
+                    Produits
+                </a>
+            </li>
+            
+            
+            <li class="nav-item">
+                <a href="#" class="nav-link" data-page="inventaire">
+                    <i class="fas fa-boxes nav-icon"></i>
+                    Inventaire
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link" data-page="commandes">
+                    <i class="fas fa-file-alt nav-icon"></i>
+                    Commandes
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link" data-page="factures">
+                    <i class="fas fa-receipt nav-icon"></i>
+                    Factures
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link" data-page="utilisateurs">
+                    <i class="fas fa-users nav-icon"></i>
+                    Utilisateurs
+                </a>
+            </li>
+            <li class="nav-item" style="margin-top: 30px;">
+                <a href="{% url 'pharmacy_connection' %}" class="nav-link" id="change-account-link" target="_self">
+                    <i class="fas fa-sign-out-alt nav-icon"></i>
+                    Changer de compte
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="main-content">
+        <div class="header">
+            <div class="header-section-top">
+                <div class="header-info">
+                    <p>Pharmacy Name</p>
+                </div>
+                <div class="header-right-section">
+                    <button class="print-btn">
+                        <i class="fas fa-print print-icon"></i>
+                    </button>
+                    <div class="user-profile">
+                        <div class="user-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="user-name">Auxiliaire</div>
+                    </div>
+                </div>
+            </div>
+            <div class="header-separator-horizontal"></div>
+            <div class="header-section-bottom">
+                <h1>Accueil</h1>
+            </div>
+        </div>
+
+        <div id="produits-content" class="content-section">
+            <!-- Le contenu sera chargé dynamiquement depuis produits.php -->
+        </div>
+    </div>
+
+    <!-- Contenu de la page Commandes -->
+    <div id="commandes-content" class="content-section" style="display: none;">
+        <h1 class="page-title">Nos commandes</h1>
+
+        <div class="search-container">
+            <div class="search-wrapper">
+                <i class="fas fa-search search-icon-commandes"></i>
+                <input type="text" class="search-input-commandes" placeholder="chercher un produit">
+            </div>
+        </div>
+
+        <div class="table-container-commandes">
+            <table class="table-commandes">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Date</th>
+                        <th>Client</th>
+                        <th>Localisation</th>
+                        <th>Statut</th>
+                        <th>Nbre de Produits</th>
+                        <th>Montant total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>003</td>
+                        <td class="date-info">7H30<br>min</td>
+                        <td class="client-info">Ulrich<br>stanley</td>
+                        <td>Calavi , fifotor</td>
+                        <td><span class="status-badge status-pending">En attente</span></td>
+                        <td>4</td>
+                        <td class="amount">89000F</td>
+                    </tr>
+                    <tr>
+                        <td>003</td>
+                        <td class="date-info">7H30<br>min</td>
+                        <td class="client-info">Ulrich<br>stanley</td>
+                        <td>Calavi , fifotor</td>
+                        <td><span class="status-badge status-in-progress">En cours</span></td>
+                        <td>4</td>
+                        <td class="amount">89000F</td>
+                    </tr>
+                    <tr>
+                        <td>003</td>
+                        <td class="date-info">7H30<br>min</td>
+                        <td class="client-info">Ulrich<br>stanley</td>
+                        <td>Calavi , fifotor</td>
+                        <td><span class="status-badge status-delivered">Livré</span></td>
+                        <td>4</td>
+                        <td class="amount">89000F</td>
+                    </tr>
+                    <tr>
+                        <td>003</td>
+                        <td class="date-info">7H30<br>min</td>
+                        <td class="client-info">Ulrich<br>stanley</td>
+                        <td>Calavi , fifotor</td>
+                        <td><span class="status-badge status-delivered">Livré</span></td>
+                        <td>4</td>
+                        <td class="amount">89000F</td>
+                    </tr>
+                    <tr>
+                        <td>003</td>
+                        <td class="date-info">7H30<br>min</td>
+                        <td class="client-info">Ulrich<br>stanley</td>
+                        <td>Calavi , fifotor</td>
+                        <td><span class="status-badge status-delivered">Livré</span></td>
+                        <td>4</td>
+                        <td class="amount">89000F</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="pagination-container-commandes">
+                <div class="pagination-info">1 sur 200</div>
+                <div class="pagination-controls">
+                    <div class="pagination-commandes">
+                        <button class="pagination-btn">‹</button>
+                        <button class="pagination-btn active">1</button>
+                        <button class="pagination-btn">›</button>
+                    </div>
+                    <button class="print-btn-commandes">Imprimer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contenu de la page d'Accueil -->
+    <!-- SUPPRIMÉ : plus de div #accueil-content -->
+</body>
+
+<script>
+    // Gestion de la navigation dynamique
+    document.addEventListener('DOMContentLoaded', function() {
+        const navLinks = document.querySelectorAll('.nav-link');
+        const headerTitle = document.querySelector('.header-section-bottom h1');
+        
+        // Titres des pages
+        const pageTitles = {
+            // accueil: 'Accueil', // SUPPRIMÉ
+            produits: 'Produits',
+            fournisseurs: 'Fournisseurs',
+            livreurs: 'Livreurs',
+            inventaire: 'Inventaire',
+            commandes: 'Commandes',
+            factures: 'Factures',
+            utilisateurs: 'Utilisateurs',
+            deconnexion: 'Déconnexion'
+        };
+
+        // Fonction pour changer de page
+        function changePage(pageName) {
+            // Mettre à jour la classe active
+            navLinks.forEach(link => link.classList.remove('active'));
+            const activeLink = document.querySelector(`[data-page="${pageName}"]`);
+            if (activeLink) {
+                activeLink.classList.add('active');
+            }
+            // Masquer tous les contenus
+            const allContents = document.querySelectorAll('.content-section');
+            allContents.forEach(content => {
+                content.style.display = 'none';
+            });
+            // Afficher le contenu correspondant
+            const targetContent = document.getElementById(`${pageName}-content`);
+            if (targetContent) {
+                targetContent.style.display = 'block';
+                // Mettre à jour le titre
+                if (pageTitles[pageName]) {
+                    headerTitle.textContent = pageTitles[pageName];
+                }
+                // Si page produits, injecter le HTML directement (plus de fetch)
+                else if (pageName === 'produits') {
+                    targetContent.innerHTML = `
+                        <div class="search-container">
+                            <i class="fas fa-search search-icon"></i>
+                            <input type="text" class="search-input" placeholder="Chercher un produit">
+                        </div>
+                        <div class="table-container">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th>Code amm</th>
+                                        <th>Année d'expiration</th>
+                                        <th>Nom fabricant</th>
+                                        <th>Dosage</th>
+                                        <th>Voie d'administration</th>
+                                        <th>Nature</th>
+                                        <th>Voie thérapeutique</th>
+                                        <th>Vo</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <div class="status-icons">
+                                                <i class="fas fa-edit status-icon status-edit"></i>
+                                                <i class="fas fa-trash status-icon status-delete"></i>
+                                            </div>
+                                        </td>
+                                        <td>1</td>
+                                        <td>000eerg</td>
+                                        <td>01/04/2026</td>
+                                        <td>igor</td>
+                                        <td>500mg</td>
+                                        <td>Orale</td>
+                                        <td>Comprimé</td>
+                                        <td>Palu</td>
+                                    </tr>
+                                    <!-- Autres lignes à ajouter ici si nécessaire -->
+                                </tbody>
+                            </table>
+                        </div>
+                    `;
+                }
+            }
+        }
+
+        // Écouter les clics sur les liens de navigation
+        navLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+                // Si c'est le lien de déconnexion, on laisse le comportement normal
+                if (this.id === 'logout-link') {
+                    return;
+                }
+                e.preventDefault();
+                const pageName = this.getAttribute('data-page');
+                if (pageName) {
+                    changePage(pageName);
+                }
+            });
+        });
+
+        var changeAccountLink = document.getElementById('change-account-link');
+        if (changeAccountLink) {
+            changeAccountLink.addEventListener('click', function(e) {
+                // On laisse le comportement natif (pas de preventDefault)
+                window.location.href = this.href;
+            });
+        }
+    });
+</script>
+</html>

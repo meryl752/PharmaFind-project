@@ -1,0 +1,28 @@
+
+
+    <h2>Mes réservations</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Date</th><th>Pharmacie</th><th>Produit(s)</th><th>Statut</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for reservation in reservations %}
+            <tr>
+                <td>{{ reservation.reservation_date }}</td>
+                <td>{{ reservation.pharmacy }}</td>
+                <td>
+                    {% for item in reservation.reservationitem_set.all %}
+                        {{ item.product.name }} ({{ item.quantity }})<br>
+                    {% endfor %}
+                </td>
+                <td>{{ reservation.status }}</td>
+            </tr>
+        {% empty %}
+            <tr><td colspan="4">Aucune réservation</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

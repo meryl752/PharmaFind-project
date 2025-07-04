@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PharmFind - Résultats de Recherche</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #4CAF50;
+            --secondary-color: #E0F2F1;
+            --accent-color: #FF5722;
+            --dark-color: #333;
+            --light-color: #f9f9f9;
+            --shadow: 0 2px 10px rgba(0,0,0,0.1);
+            --warning-color: #FF9800;
+            --success-color: #4CAF50;
+            --info-color: #2196F3;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'poppins', sans-serif;
+        }
+        
+        body {
+            background-color: var(--light-color);
+            color: var(--dark-color);
+            padding-bottom: 80px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background-color: white;
+            box-shadow: var(--shadow);
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+        }
+        
+        .logo i {
+            margin-right: 10px;
+            font-size: 28px;
+        }
+
+        .back-btn {
+            color: var(--primary-color);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+            padding: 8px 16px;
+            border: 1px solid var(--primary-color);
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        /* Search Results Header */
+        .results-header {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+        }
+
+        .search-summary {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .search-info h1 {
+            color: var(--dark-color);
+            margin-bottom: 5px;
+        }
+
+        .search-details {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .filters-toggle {
+            display: flex;
+            gap: 10px;
+        }
+
+        .filter-btn {
+            padding: 10px 20px;
+            border: 1px solid var(--primary-color);
+            background: white;
+            color: var(--primary-color);
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 14px;
+        }
+
+        .filter-btn:hover, .filter-btn.active {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        /* Products Grid */
+        .products-container {
+            display: grid;
+            gap: 20px;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .product-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+        }
+
+        .product-content {
+            display: grid;
+            grid-template-columns: 120px 1fr auto;
+            gap: 20px;
+            padding: 20px;
+            align-items: start;
+        }
+
+        .product-image {
+            width: 120px;
+            height: 120px;
+            border-radius: 10px;
+            object-fit: cover;
+            background: var(--light-color);
+        }
+
+        .product-details {
+            flex: 1;
+        }
+
+        .product-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 10px;
+        }
+
+        .product-name {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--dark-color);
+            margin-bottom: 5px;
+        }
+
+        .product-category {
+            background: var(--secondary-color);
+            color: var(--primary-color);
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .product-description {
+            color: #666;
+            line-height: 1.5;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+
+        .product-features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .feature-tag {
+            background: #f0f0f0;
+            padding: 4px 8px;
+            border-radius: 10px;
+            font-size: 11px;
+            color: #666;
+        }
+
+        .insurance-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .insurance-badge {
+            background: var(--info-color);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 10px;
+            font-size: 11px;
+        }
+
+        .prescription-required {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: var(--warning-color);
+            font-size: 12px;
+            margin-bottom: 10px;
+        }
+
+        .product-actions {
+            display: flex;
+            flex-direction: column;
+            align-items: end;
+            gap: 10px;
+        }
+
+        .price-section {
+            text-align: right;
+        }
+
+        .price {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .price-with-insurance {
+            font-size: 0.9rem;
+            color: #666;
+            text-decoration: line-through;
+            margin-bottom: 5px;
+        }
+
+        .action-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s;
+            text-decoration: none;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #45a049;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+        }
+
+        .btn-secondary:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn-upload {
+            background: var(--warning-color);
+            color: white;
+            font-size: 12px;
+            padding: 8px 15px;
+        }
+
+        .btn-upload:hover {
+            background: #f57c00;
+        }
+
+        .btn-uploaded {
+            background: var(--success-color);
+            color: white;
+            font-size: 12px;
+            padding: 8px 15px;
+        }
+
+        /* Pharmacy Info */
+        .pharmacy-info {
+            background: var(--light-color);
+            padding: 15px;
+            border-radius: 0 0 15px 15px;
+            border-top: 1px solid #eee;
+        }
+
+        .pharmacy-name {
+            font-weight: 600;
+            color: var(--dark-color);
+            margin-bottom: 5px;
+        }
+
+        .pharmacy-details {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            color: #666;
+        }
+
+        .distance {
+            color: var(--primary-color);
+            font-weight: 500;
+        }
+
+        .stock-status {
+            padding: 4px 8px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .in-stock {
+            background: #E8F5E8;
+            color: var(--success-color);
+        }
+
+        .low-stock {
+            background: #FFF3E0;
+            color: var(--warning-color);
+        }
+
+        .out-of-stock {
+            background: #FFEBEE;
+            color: var(--accent-color);
+        }
+
+        /* Upload Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 30px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            position: relative;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            position: absolute;
+            top: 15px;
+            right: 20px;
+        }
+
+        .close:hover {
+            color: black;
+        }
+
+        .upload-area {
+            border: 2px dashed #ddd;
+            border-radius: 10px;
+            padding: 40px;
+            text-align: center;
+            margin: 20px 0;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .upload-area:hover {
+            border-color: var(--primary-color);
+            background: var(--secondary-color);
+        }
+
+        .upload-area.dragover {
+            border-color: var(--primary-color);
+            background: var(--secondary-color);
+        }
+
+        /* Success notification */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--success-color);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+            z-index: 1001;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 15px 0;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            z-index: 1000;
+        }
+        
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #666;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .nav-item.active {
+            color: var(--primary-color);
+        }
+        
+        .nav-icon {
+            font-size: 20px;
+            margin-bottom: 5px;
+        }
+
+        .nav-item span {
+            font-size: 12px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .product-content {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .product-image {
+                width: 100%;
+                height: 200px;
+            }
+
+            .product-actions {
+                align-items: stretch;
+            }
+
+            .action-buttons {
+                flex-direction: row;
+                justify-content: space-between;
+            }
+
+            .search-summary {
+                text-align: center;
+            }
+
+            .filters-toggle {
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+        }
+    </style>
+</head>
+<body>
+    {% extends 'header.html'%}
+    {% block content %}
+    <main>
+        <div class="container">
+            <!-- Results Header -->
+            <div class="results-header">
+                <div class="search-summary">
+                    <div class="search-info">
+                        <h1>Résultats pour "Doliprane"</h1>
+                        <div class="search-details">
+                            <i class="fas fa-map-marker-alt"></i> Abomey-Calavi, Atlantique • 12 résultats trouvés
+                        </div>
+                    </div>
+                    <div class="filters-toggle">
+                        <button class="filter-btn active" data-filter="all">Tout</button>
+                        <button class="filter-btn" data-filter="in-stock">En stock</button>
+                        <button class="filter-btn" data-filter="with-insurance">Avec assurance</button>
+                        <button class="filter-btn" data-filter="no-prescription">Sans ordonnance</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Products Container -->
+            <div class="products-container" id="productsContainer">
+                <!-- Product 1 -->
+                <div class="product-card" data-category="antidouleur" data-stock="in-stock" data-insurance="true" data-prescription="false">
+                    <div class="product-content">
+                        <img src="https://via.placeholder.com/120x120/4CAF50/ffffff?text=Doliprane" alt="Doliprane 1000mg" class="product-image">
+                    
+                        <div class="product-details">
+                            <div class="product-header">
+                                <div>
+                                    <h3 class="product-name">Doliprane 1000mg</h3>
+                                    <span class="product-category">Antidouleur</span>
+                                </div>
+                            </div>
+                        
+                            <p class="product-description">
+                                Médicament à base de paracétamol indiqué dans le traitement symptomatique des douleurs d'intensité légère à modérée et/ou des états fébriles.
+                            </p>
+                        
+                            <div class="product-features">
+                                <span class="feature-tag">Paracétamol 1000mg</span>
+                                <span class="feature-tag">Boîte de 8 comprimés</span>
+                                <span class="feature-tag">Sans sucre</span>
+                            </div>
+                
+                            <div class="insurance-info">
+                                <i class="fas fa-shield-alt"></i>
+                                <span>Pris en charge par:</span>
+                                <span class="insurance-badge">CNSS</span>
+                                <span class="insurance-badge">MUGEF</span>
+                                <span class="insurance-badge">Assurance Privée</span>
+                            </div>
+                        </div>
+                    
+                        <div class="product-actions">
+                            <div class="price-section">
+                                <div class="price-with-insurance">3 500 FCFA</div>
+                                <div class="price">2 800 FCFA</div>
+                            </div>
+                        
+                            <div class="action-buttons">
+                                <button class="btn btn-primary" onclick="reserveProduct('doliprane-1000')">
+                                    <i class="fas fa-shopping-cart"></i>
+                                    Réserver
+                                </button>
+                                <button class="btn btn-secondary" onclick="showDetails('doliprane-1000')">
+                                    <i class="fas fa-info-circle"></i>
+                                    Détails
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                
+                    <div class="pharmacy-info">
+                        <div class="pharmacy-name">Pharmacie du Centre</div>
+                        <div class="pharmacy-details">
+                            <span><i class="fas fa-map-marker-alt"></i> Rue des Pharmacies, Abomey-Calavi</span>
+                            <span class="distance">0.5 km</span>
+                            <span class="stock-status in-stock">En stock (15)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product 2 -->
+                <div class="product-card" data-category="antidouleur" data-stock="low-stock" data-insurance="true" data-prescription="true">
+                    <div class="product-content">
+                        <img src="https://via.placeholder.com/120x120/FF5722/ffffff?text=Tramadol" alt="Tramadol 50mg" class="product-image">
+                        
+                        <div class="product-details">
+                            <div class="product-header">
+                                <div>
+                                    <h3 class="product-name">Tramadol 50mg</h3>
+                                    <span class="product-category">Antidouleur</span>
+                                </div>
+                            </div>
+                            
+
+                            <div class="prescription-required">
+                                <i class="fas fa-prescription-bottle-alt"></i>
+                                <span>Ordonnance requise</span>
+                            </div>
+                            
+                            <p class="product-description">
+                                Analgésique opioïde indiqué dans le traitement des douleurs modérées à sévères. Médicament soumis à prescription médicale.
+                            </p>
+                            
+                            <div class="product-features">
+                                <span class="feature-tag">Tramadol 50mg</span>
+                                <span class="feature-tag">Boîte de 20 gélules</span>
+                                <span class="feature-tag">Liste I</span>
+                            </div>
+                            
+                            <div class="insurance-info">
+                                <i class="fas fa-shield-alt"></i>
+                                <span>Pris en charge par:</span>
+                                <span class="insurance-badge">CNSS</span>
+                                <span class="insurance-badge">MUGEF</span>
+                            </div>
+                        </div>
+                        
+                        <div class="product-actions">
+                            <div class="price-section">
+                                <div class="price-with-insurance">8 200 FCFA</div>
+                                <div class="price">6 500 FCFA</div>
+                            </div>
+                            
+                            <div class="action-buttons">
+                                <button class="btn btn-upload" onclick="openUploadModal('tramadol-50')" id="upload-btn-tramadol-50">
+                                    <i class="fas fa-upload"></i>
+                                    Ordonnance
+                                </button>
+                                <button class="btn btn-secondary" onclick="showDetails('tramadol-50')">
+                                    <i class="fas fa-info-circle"></i>
+                                    Détails
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="pharmacy-info">
+                        <div class="pharmacy-name">Pharmacie Sainte-Marie</div>
+                        <div class="pharmacy-details">
+                            <span><i class="fas fa-map-marker-alt"></i> Avenue de la Paix, Calavi</span>
+                            <span class="distance">1.2 km</span>
+                            <span class="stock-status low-stock">Stock limité (3)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product 3 -->
+                <div class="product-card" data-category="antiseptique" data-stock="in-stock" data-insurance="false" data-prescription="false">
+                    <div class="product-content">
+                        <img src="https://via.placeholder.com/120x120/2196F3/ffffff?text=Bétadine" alt="Bétadine Solution" class="product-image">
+                        
+                        <div class="product-details">
+                            <div class="product-header">
+                                <div>
+                                    <h3 class="product-name">Bétadine Solution 10%</h3>
+                                    <span class="product-category">Antiseptique</span>
+                                </div>
+                            </div>
+                            
+                            <p class="product-description">
+                                Solution antiseptique à base de povidone iodée pour la désinfection des plaies et la prévention des infections cutanées.
+                            </p>
+                            
+                            <div class="product-features">
+                                <span class="feature-tag">Povidone iodée 10%</span>
+                                <span class="feature-tag">Flacon de 125ml</span>
+                                <span class="feature-tag">Usage externe</span>
+                            </div>
+                            
+                            <div class="insurance-info">
+                                <i class="fas fa-times-circle" style="color: #ccc;"></i>
+                                <span style="color: #999;">Non remboursé par l'assurance</span>
+                            </div>
+                        </div>
+                        
+                        <div class="product-actions">
+                            <div class="price-section">
+                                <div class="price">4 200 FCFA</div>
+                            </div>
+                            
+                            <div class="action-buttons">
+                                <button class="btn btn-primary" onclick="reserveProduct('betadine-solution')">
+                                    <i class="fas fa-shopping-cart"></i>
+                                    Réserver
+                                </button>
+                                <button class="btn btn-secondary" onclick="showDetails('betadine-solution')">
+                                    <i class="fas fa-info-circle"></i>
+                                    Détails
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="pharmacy-info">
+                        <div class="pharmacy-name">Pharmacie Moderne</div>
+                        <div class="pharmacy-details">
+                            <span><i class="fas fa-map-marker-alt"></i> Carrefour Akassato</span>
+                            <span class="distance">2.1 km</span>
+                            <span class="stock-status in-stock">En stock (8)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product 4 -->
+                <div class="product-card" data-category="antidouleur" data-stock="out-of-stock" data-insurance="true" data-prescription="false">
+                    <div class="product-content">
+                        <img src="https://via.placeholder.com/120x120/9E9E9E/ffffff?text=Efferalgan" alt="Efferalgan 500mg" class="product-image">
+                        
+                        <div class="product-details">
+                            <div class="product-header">
+                                <div>
+                                    <h3 class="product-name">Efferalgan 500mg</h3>
+                                    <span class="product-category">Antidouleur</span>
+                                </div>
+                            </div>
+                            
+                            <p class="product-description">
+                                Comprimés effervescents à base de paracétamol pour le soulagement rapide des douleurs et de la fièvre.
+                            </p>
+                            
+                            <div class="product-features">
+                                <span class="feature-tag">Paracétamol 500mg</span>
+                                <span class="feature-tag">Boîte de 16 comprimés</span>
+                                <span class="feature-tag">Effervescent</span>
+                            </div>
+                            
+                            <div class="insurance-info">
+                                <i class="fas fa-shield-alt"></i>
+                                <span>Pris en charge par:</span>
+                                <span class="insurance-badge">CNSS</span>
+                                <span class="insurance-badge">MUGEF</span>
+                            </div>
+                        </div>
+                        
+                        <div class="product-actions">
+                            <div class="price-section">
+                                <div class="price-with-insurance">2 800 FCFA</div>
+                                <div class="price">2 200 FCFA</div>
+                            </div>
+                            
+                            <div class="action-buttons">
+                                <button class="btn btn-secondary" disabled style="opacity: 0.5;">
+                                    <i class="fas fa-ban"></i>
+                                    Rupture
+                                </button>
+                                <button class="btn btn-secondary" onclick="showDetails('efferalgan-500')">
+                                    <i class="fas fa-info-circle"></i>
+                                    Détails
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="pharmacy-info">
+                        <div class="pharmacy-name">Pharmacie de l'Espoir</div>
+                        <div class="pharmacy-details">
+                            <span><i class="fas fa-map-marker-alt"></i> Boulevard de la République</span>
+                            <span class="distance">0.8 km</span>
+                            <span class="stock-status out-of-stock">Rupture de stock</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Upload Modal -->
+        <div id="uploadModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>Téléverser votre ordonnance</h2>
+                <p>Veuillez téléverser une photo claire de votre ordonnance pour pouvoir réserver ce médicament.</p>
+                
+                <div class="upload-area" id="uploadArea">
+                    <i class="fas fa-cloud-upload-alt" style="font-size: 3rem; color: #ccc; margin-bottom: 15px;"></i>
+                    <p>Cliquez pour sélectionner ou glissez-déposez votre fichier ici</p>
+                    <p style="font-size: 12px; color: #999; margin-top: 10px;">
+                        Formats acceptés: JPG, PNG, PDF (Max 5MB)
+                    </p>
+                </div>
+                
+                <input type="file" id="fileInput" accept=".jpg,.jpeg,.png,.pdf" style="display: none;">
+                
+                <div style="margin-top: 20px; text-align: right;">
+                    <button class="btn btn-secondary" onclick="closeUploadModal()">Annuler</button>
+                    <button class="btn btn-primary" onclick="uploadPrescription()" style="margin-left: 10px;" id="confirmUploadBtn">
+                        <i class="fas fa-check"></i>
+                        Confirmer
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Notification -->
+        <div id="notification" class="notification">
+            <i class="fas fa-check-circle"></i>
+            <span id="notificationText"></span>
+        </div>
+    </main>
+
+
+
+    <script>
+        // Variables globales
+        let currentProduct = null;
+        let uploadedFiles = {};
+
+        // Filter functionality
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                // Remove active class from all buttons
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                
+                // Add active class to clicked button
+                this.classList.add('active');
+                
+                // Filter products
+                filterProducts(this.dataset.filter);
+            });
+        });
+
+        function filterProducts(filter) {
+            const products = document.querySelectorAll('.product-card');
+            
+            products.forEach(product => {
+                let show = true;
+                
+                switch(filter) {
+                    case 'in-stock':
+                        show = product.dataset.stock === 'in-stock';
+                        break;
+                    case 'with-insurance':
+                        show = product.dataset.insurance === 'true';
+                        break;
+                    case 'no-prescription':
+                        break;
+                    default:
+                        show = true;
+                }
+                product.style.display = show ? '' : 'none';
+            });
+        }
+
+        // Upload Modal Logic
+        function openUploadModal(productId) {
+            currentProduct = productId;
+            document.getElementById('uploadModal').style.display = 'block';
+            document.getElementById('fileInput').value = '';
+            document.getElementById('uploadArea').classList.remove('dragover');
+        }
+
+        function closeUploadModal() {
+            document.getElementById('uploadModal').style.display = 'none';
+        }
+
+        // Drag & Drop for upload area
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('fileInput');
+
+        uploadArea.addEventListener('click', () => fileInput.click());
+
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragover');
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            if (e.dataTransfer.files.length) {
+                fileInput.files = e.dataTransfer.files;
+            }
+        });
+
+        fileInput.addEventListener('change', () => {
+            // Optionally show file name or preview
+        });
+
+        // Upload prescription logic (mock)
+        function uploadPrescription() {
+            if (!fileInput.files.length) {
+                showNotification("Veuillez sélectionner un fichier à téléverser.");
+                return;
+            }
+            // Simulate upload
+            uploadedFiles[currentProduct] = true;
+            closeUploadModal();
+            showNotification("Ordonnance téléversée avec succès !");
+            // Change button style to uploaded
+            const btn = document.getElementById('upload-btn-' + currentProduct);
+            if (btn) {
+                btn.classList.remove('btn-upload');
+                btn.classList.add('btn-uploaded');
+                btn.innerHTML = '<i class="fas fa-check"></i> Ordonnance envoyée';
+                btn.disabled = true;
+            }
+        }
+
+        // Modal close button
+        document.querySelector('.modal .close').onclick = closeUploadModal;
+
+        // Notification logic
+        function showNotification(message) {
+            const notif = document.getElementById('notification');
+            document.getElementById('notificationText').textContent = message;
+            notif.classList.add('show');
+            setTimeout(() => notif.classList.remove('show'), 3000);
+        }
+
+        // Reserve product (mock)
+        function reserveProduct(productId) {
+            showNotification("Produit réservé avec succès !");
+        }
+
+        // Show details (mock)
+        function showDetails(productId) {
+            showNotification("Affichage des détails du produit.");
+        }
+
+        // Close modal on outside click
+        window.onclick = function(event) {
+            const modal = document.getElementById('uploadModal');
+            if (event.target == modal) {
+                closeUploadModal();
+            }
+        }
+    </script>
+    {% include 'footer.html' %}
+    {% endblock %}
+</body>
+</html>
