@@ -40,53 +40,6 @@
             margin: 0 auto;
             padding: 20px;
         }
-        
-        header {
-            background-color: white;
-            box-shadow: var(--shadow);
-            padding: 15px 0;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-        
-        .header-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .logo {
-            font-size: 24px;
-            font-weight: bold;
-            color: var(--primary-color);
-            display: flex;
-            align-items: center;
-            text-decoration: none;
-        }
-        
-        .logo i {
-            margin-right: 10px;
-            font-size: 28px;
-        }
-
-        .back-btn {
-            color: var(--primary-color);
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-weight: 500;
-            padding: 8px 16px;
-            border: 1px solid var(--primary-color);
-            border-radius: 5px;
-            transition: all 0.3s ease;
-        }
-
-        .back-btn:hover {
-            background-color: var(--primary-color);
-            color: white;
-        }
 
         /* Results Header */
         .results-header {
@@ -739,19 +692,19 @@
             <!-- Products Container -->
             <div class="products-container" id="productsContainer">
                 {% if products_with_pharmacies %}
-                    {% for prod in products_with_pharmacies %}
-                    <div class="product-card" data-product-id="{{ prod.product.id }}">
+                    {% for item in products_with_pharmacies %}
+                    <div class="product-card" data-product-id="{{ item.product.id }}" data-pharmacy-id="{{ item.pharmacy.id }}" data-stock="{{ item.stock }}">
                         <div class="product-content">
-                            <img src="{{ prod.product.photo.url }}" alt="{{ prod.product.name }}" class="product-image">
+                            <img src="{{ item.product.photo.url }}" alt="{{ item.product.name }}" class="product-image">
                             <div class="product-details">
                                 <div class="product-header">
                                     <div>
-                                        <h3 class="product-name">{{ prod.product.name }}</h3>
-                                        <span class="product-category">{{ prod.product.category.name }}</span>
+                                        <h3 class="product-name">{{ item.product.name }}</h3>
+                                        <span class="product-category">{{ item.product.category.name }}</span>
                                     </div>
                                 </div>
                                 <div class="prescription-required">
-                                    {% if prod.product.with_ordonance %}
+                                    {% if item.product.with_ordonance %}
                                         <i class="fas fa-prescription-bottle"></i>
                                         <span>Ordonnance requise</span>
                                     {% else %}
@@ -759,11 +712,11 @@
                                         <span>Pas d'ordonnance requise</span>
                                     {% endif %}
                                 </div>
-                                <p class="product-description">{{ prod.product.description }}</p>
+                                <p class="product-description">{{ item.product.description }}</p>
                                 <div class="insurance-info">
                                     <i class="fas fa-shield-alt"></i>
                                     <span>Pris en charge par:</span>
-                                    {% for assur in prod.product.insurance.all %}
+                                    {% for assur in item.product.insurance.all %}
                                         <span class="insurance-badge">{{ assur.name }}</span>
                                     {% empty %}
                                         <span> Aucune assurance </span>
@@ -772,21 +725,21 @@
                             </div>
                             <div class="product-actions">
                                 <div class="price-section">
-                                    <div class="price">{{ prod.product.price }} FCFA</div>
+                                    <div class="price">{{ item.product.price }} FCFA</div>
                                 </div>
                                 <div class="action-buttons">
-                                    {% if prod.product.with_ordonance %}
-                                    <button class="btn btn-upload" onclick="openUploadModal('{{ prod.product.id }}')">
+                                    {% if item.product.with_ordonance %}
+                                    <button class="btn btn-upload" onclick="openUploadModal('{{ item.product.id }}')">
                                         <i class="fas fa-upload"></i>
                                         Ordonnance
                                     </button>
                                     {% else %}
-                                    <button class="btn btn-primary btn-reserve-interactive" data-product-id="{{ prod.product.id }}">
+                                    <button class="btn btn-primary btn-reserve-interactive" data-product-id="{{ item.product.id }}">
                                         <i class="fas fa-shopping-cart"></i>
                                         Réserver
                                     </button>
                                     {% endif %}
-                                    <button class="btn btn-secondary btn-order-interactive" data-product-id="{{ prod.product.id }}">
+                                    <button class="btn btn-secondary btn-order-interactive" data-product-id="{{ item.product.id }}">
                                         <i class="fas fa-shopping-bag"></i>
                                         Commander
                                     </button>
@@ -794,22 +747,13 @@
                             </div>
                         </div>
                         <div class="pharmacy-info">
-                            {% if prod.pharmacies %}
-                                <div class="pharmacy-name" style="margin-bottom:8px;">Disponible dans&nbsp;:</div>
-                                <div class="pharmacy-list-modern" id="pharmacy-list-{{ prod.product.id }}">
-                                {% for ph in prod.pharmacies %}
-                                    <div class="pharmacy-mini-card" data-product-id="{{ prod.product.id }}" data-pharmacy-id="{{ ph.pharmacy.id }}" data-stock="{{ ph.quantity }}">
-                                        <div class="pharmacy-mini-title">{{ ph.pharmacy.first_name }} {{ ph.pharmacy.last_name }}</div>
-                                        <div class="pharmacy-mini-address">{{ ph.address }}, {{ ph.city }}</div>
-                                        <div class="pharmacy-mini-stock {% if ph.quantity == 0 %}out{% elif ph.quantity <= 5 %}low{% endif %}">Stock : {{ ph.quantity }}</div>
-                                    </div>
-                                {% endfor %}
-                                </div>
-                            {% else %}
-                                <div class="pharmacy-details">
-                                    <span class="stock-status out-of-stock">Aucune pharmacie ne propose ce produit actuellement</span>
-                                </div>
-                            {% endif %}
+                            <div class="pharmacy-name" style="margin-bottom:8px;">{{ item.pharmacy.first_name }} {{ item.pharmacy.last_name }}</div>
+                            <div class="pharmacy-details">
+                                <span>{{ item.address }}, {{ item.city }}</span>
+                                <span class="stock-status {% if item.stock == 0 %}out-of-stock{% elif item.stock <= 5 %}low-stock{% else %}in-stock{% endif %}">
+                                    Stock : {{ item.stock }}
+                                </span>
+                            </div>
                         </div>
                     </div>
                     {% endfor %}
@@ -1213,19 +1157,82 @@
         function closeQuantityModal() {
             document.getElementById('quantityModal').style.display = 'none';
         }
-        function setButtonState(productId, pharmacyId, action, state) {
+        function setButtonState(productId, pharmacyId, action, state, qty) {
             // action: 'order' ou 'reservation', state: 'default' ou 'cancel'
+            let card = document.querySelector('.product-card[data-product-id="' + productId + '"][data-pharmacy-id="' + pharmacyId + '"]');
             let btn;
             if(action === 'order') {
-                btn = document.querySelector('.btn-order-interactive[data-product-id="' + productId + '"]');
+                btn = card.querySelector('.btn-order-interactive');
             } else {
-                btn = document.querySelector('.btn-reserve-interactive[data-product-id="' + productId + '"]');
+                btn = card.querySelector('.btn-reserve-interactive');
             }
             if(!btn) return;
             if(state === 'cancel') {
                 btn.textContent = 'Annuler';
                 btn.classList.add('btn-cancel');
-                btn.onclick = function() { cancelAction(productId, pharmacyId, action, btn); };
+                btn.style.background = '#ffb3b3'; // rouge clair
+                btn.disabled = false;
+                // Ajoute gestionnaire d'annulation temporaire
+                let cancelHandler = function() {
+                    // Appel API d'annulation
+                    let url = (action === 'order') ? '/annuler_commande/' : '/annuler_reservation/';
+                    fetch(url, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                            'X-CSRFToken': getCookie('csrftoken')
+                        },
+                        body: `produit_id=${productId}&pharmacie_id=${pharmacyId}`
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if(data.success) {
+                            showNotification(data.message);
+                            // Rétablir le stock côté front
+                            var stockSpan = card.querySelector('.stock-status');
+                            var currentStock = parseInt(stockSpan.textContent.replace(/[^0-9]/g, ''));
+                            var newStock = currentStock + (qty || 1);
+                            stockSpan.textContent = 'Stock : ' + newStock;
+                            if(newStock > 0) {
+                                btn.disabled = false;
+                                stockSpan.classList.remove('out-of-stock');
+                                if(newStock <= 5) {
+                                    stockSpan.classList.add('low-stock');
+                                    stockSpan.classList.remove('in-stock');
+                                } else {
+                                    stockSpan.classList.add('in-stock');
+                                    stockSpan.classList.remove('low-stock');
+                                }
+                            }
+                            // Remettre le bouton à l'état initial
+                            if(action === 'order') {
+                                btn.innerHTML = '<i class="fas fa-shopping-bag"></i> Commander';
+                            } else {
+                                btn.innerHTML = '<i class="fas fa-shopping-cart"></i> Réserver';
+                            }
+                            btn.classList.remove('btn-cancel');
+                            btn.style.background = '';
+                            btn.removeEventListener('click', cancelHandler);
+                        } else {
+                            showNotification(data.error || 'Erreur lors de l\'annulation.');
+                        }
+                    })
+                    .catch(() => {
+                        showNotification('Erreur réseau.');
+                    });
+                };
+                btn.addEventListener('click', cancelHandler);
+                // Après 3 secondes, désactive l'annulation
+                setTimeout(function() {
+                    btn.removeEventListener('click', cancelHandler);
+                    if(action === 'order') {
+                        btn.innerHTML = '<i class="fas fa-shopping-bag"></i> Commander';
+                    } else {
+                        btn.innerHTML = '<i class="fas fa-shopping-cart"></i> Réserver';
+                    }
+                    btn.classList.remove('btn-cancel');
+                    btn.style.background = '';
+                }, 3000);
             } else {
                 // Remettre le texte d'origine
                 if(action === 'order') {
@@ -1234,7 +1241,7 @@
                     btn.innerHTML = '<i class="fas fa-shopping-cart"></i> Réserver';
                 }
                 btn.classList.remove('btn-cancel');
-                btn.onclick = null;
+                btn.style.background = '';
             }
         }
         function cancelAction(productId, pharmacyId, action, btn) {
@@ -1262,10 +1269,41 @@
                 showNotification('Erreur réseau.');
             });
         }
-        // Adapter la soumission pour la commande ou la réservation
+        // --- MODALE QUANTITÉ ---
+        function openQuantityModalFromCard(productId, pharmacyId, stock) {
+            // Récupère la card concernée
+            var card = document.querySelector('.product-card[data-product-id="' + productId + '"][data-pharmacy-id="' + pharmacyId + '"]');
+            var pharmacyName = card.querySelector('.pharmacy-name').textContent;
+            document.getElementById('modalPharmacyName').textContent = pharmacyName;
+            document.getElementById('modalPharmacyStock').textContent = stock;
+            document.getElementById('quantityInput').max = stock;
+            document.getElementById('quantityInput').value = 1;
+            document.getElementById('modalProductId').value = productId;
+            document.getElementById('modalPharmacyId').value = pharmacyId;
+            document.getElementById('quantityModal').style.display = 'block';
+        }
+        // Remplace l'ancien event pour les boutons Réserver/Commander
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.btn-reserve-interactive, .btn-order-interactive').forEach(function(btn) {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    var card = btn.closest('.product-card');
+                    var productId = card.getAttribute('data-product-id');
+                    var pharmacyId = card.getAttribute('data-pharmacy-id');
+                    var stock = parseInt(card.querySelector('.stock-status').textContent.replace(/[^0-9]/g, ''));
+                    currentAction = btn.classList.contains('btn-order-interactive') ? 'order' : 'reservation';
+                    if(stock > 0) {
+                        openQuantityModalFromCard(productId, pharmacyId, stock);
+                    } else {
+                        showNotification("Stock épuisé dans cette pharmacie.");
+                    }
+                });
+            });
+        });
+        // Après validation, met à jour le stock affiché dans la card
         function submitReservation(e) {
             e.preventDefault();
-            const qty = document.getElementById('quantityInput').value;
+            const qty = parseInt(document.getElementById('quantityInput').value);
             const productId = document.getElementById('modalProductId').value;
             const pharmacyId = document.getElementById('modalPharmacyId').value;
             closeQuantityModal();
@@ -1290,7 +1328,24 @@
             .then(data => {
                 if(data.success) {
                     showNotification(successMsg);
-                    setButtonState(productId, pharmacyId, currentAction, 'cancel');
+                    setButtonState(productId, pharmacyId, currentAction, 'cancel', qty);
+                    // Met à jour le stock affiché dans la card
+                    var card = document.querySelector('.product-card[data-product-id="' + productId + '"][data-pharmacy-id="' + pharmacyId + '"]');
+                    var stockSpan = card.querySelector('.stock-status');
+                    var newStock = parseInt(stockSpan.textContent.replace(/[^0-9]/g, '')) - qty;
+                    stockSpan.textContent = 'Stock : ' + newStock;
+                    if(newStock <= 0) {
+                        stockSpan.classList.remove('in-stock', 'low-stock');
+                        stockSpan.classList.add('out-of-stock');
+                        card.querySelector('.btn-reserve-interactive').disabled = true;
+                        card.querySelector('.btn-order-interactive').disabled = true;
+                    } else if(newStock <= 5) {
+                        stockSpan.classList.remove('in-stock', 'out-of-stock');
+                        stockSpan.classList.add('low-stock');
+                    } else {
+                        stockSpan.classList.remove('low-stock', 'out-of-stock');
+                        stockSpan.classList.add('in-stock');
+                    }
                 } else {
                     showNotification(data.error || 'Erreur lors de la commande/réservation.');
                 }
