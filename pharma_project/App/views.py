@@ -181,16 +181,16 @@ def search(request):
     if categorie_id:
         products = products.filter(category_id=categorie_id)
 
-    from .models import Order, OrderItem, Reservation, ReservationItem
+    from .models import Order, OrderItem, Reservation, ReservationItem, PharmacyProduct
 
-    # Pour chaque produit, trouver les pharmacies qui l'ont en stock
+    # Nouvelle structure : une card par produit ET par pharmacie
     for product in products:
         pharmacies_stock = PharmacyProduct.objects.filter(product=product, quantity__gt=0)
-        pharmacies_info = []
         for ps in pharmacies_stock:
             info = {
+                'product': product,
                 'pharmacy': ps.pharmacy,
-                'quantity': ps.quantity,
+                'stock': ps.quantity,
                 'address': str(ps.pharmacy.address),
                 'city': str(ps.pharmacy.city),
                 'has_pending_order': False,
@@ -205,11 +205,7 @@ def search(request):
                 reservation = Reservation.objects.filter(customer=user, pharmacy=ps.pharmacy, status='pending').first()
                 if reservation and ReservationItem.objects.filter(reservation=reservation, product=product).exists():
                     info['has_pending_reservation'] = True
-            pharmacies_info.append(info)
-        products_with_pharmacies.append({
-            'product': product,
-            'pharmacies': pharmacies_info
-        })
+            products_with_pharmacies.append(info)
 
     context = {
         'products': products,
@@ -424,3 +420,17 @@ def medicaments_populaires_api(request):
             'description': prod.description,
         })
     return JsonResponse({'produits': data})
+
+def commandes_partial(request):
+    return render(request, 'App/commandes.html')
+
+
+
+def produits_partial(request):
+    return render(request, 'App/produits.html')
+
+def panier(request):
+    if not request.user.is_authenticated:
+        return redirect('connexion')
+    # À compléter plus tard avec les articles du panier
+    return render(request, "App/panier.html")

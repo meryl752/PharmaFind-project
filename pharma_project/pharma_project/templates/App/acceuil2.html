@@ -1,0 +1,97 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Medico Store - Corrected</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    .product-prices-ecom {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      margin-bottom: 0;
+    }
+    .old-price-ecom {
+      text-decoration: line-through;
+      color: #b0b0b0;
+      font-size: 1rem;
+    }
+    .new-price-ecom {
+      font-size: 1.25rem;
+      font-weight: bold;
+      color: #111;
+    }
+    .product-tax-ecom {
+      font-size: 0.85rem;
+      color: #888;
+      margin-top: 2px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="user-actions">
+      <a href="{% url 'commandes' %}" title="Commandes" class="icon-link">
+        <i class="fas fa-box"></i>
+      </a>
+      <button type="button" title="Profil" class="profile-initials-circle" id="profileDropdownBtn">
+        {{ user.first_name|slice:":1"|upper }}{{ user.last_name|slice:":1"|upper }}
+      </button>
+    </div>
+
+    <div class="profile-dropdown" id="profileDropdownMenu">
+      <div class="profile-dropdown-header">
+        <div class="profile-dropdown-initials">
+          {{ user.first_name|slice:":1"|upper }}{{ user.last_name|slice:":1"|upper }}
+        </div>
+      </div>
+    </div>
+
+    <section class="features">
+      <div class="container">
+        <div class="features-grid">
+          <div class="feature-card green">
+            <div class="feature-content">
+              <span class="feature-icon-fa"><i class="fas fa-map-marker-alt"></i></span>
+              <div class="feature-title">Localiser une pharmacie</div>
+              <span class="feature-chevron"><i class="fas fa-chevron-right"></i></span>
+            </div>
+          </div>
+          <div class="feature-card green">
+            <div class="feature-content">
+              <span class="feature-icon-fa"><i class="fas fa-shopping-cart"></i></span>
+              <div class="feature-title">Suivre une commande</div>
+              <span class="feature-chevron"><i class="fas fa-chevron-right"></i></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="product-grid-ecom">
+      {% for product in cosmetic_showcase_products %}
+      <div class="product-card-ecom">
+        <span class="badge-promo">25% OFF</span>
+        <div class="product-img-ecom">
+          {% if product.photo %}
+            <img src="{{ product.photo.url }}" alt="{{ product.name }}">
+          {% else %}
+            <img src="https://via.placeholder.com/200x180?text=Produit" alt="{{ product.name }}">
+          {% endif %}
+        </div>
+        <div class="product-title-ecom">{{ product.name }}</div>
+        <div class="product-desc-ecom">{{ product.description|truncatechars:60 }}</div>
+        <div class="product-prices-ecom">
+          <span class="old-price-ecom">{{ product.old_price|default:product.price|add:'500' }} FCFA</span>
+          <span class="new-price-ecom">{{ product.price }} FCFA</span>
+        </div>
+        <div class="product-tax-ecom">Including Tax</div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</body>
+</html>

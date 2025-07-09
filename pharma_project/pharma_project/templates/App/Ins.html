@@ -1,0 +1,143 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    
+</head>
+<body>
+    
+    {% block content %}
+    <div class="form-container">
+        <!-- Formulaire d'inscription -->
+        <h2>Créer un compte</h2>
+        <form method="POST" action="{% url 'Ins' %}">
+            {% csrf_token %}
+
+            <div class="form-group">
+                {{ form.username.label_tag }}
+                {{ form.username }}
+                {% for error in form.username.errors %}
+                <p class="error">{{ error }}</p>
+                {% endfor %}
+            </div>
+
+            <div class="form-group">
+                {{ form.first_name.label_tag }}
+                {{ form.first_name }}
+                {% for error in form.first_name.errors %}
+                <p class="error">{{ error }}</p>
+                {% endfor %}
+            </div>
+
+            <div class="form-group">
+                {{ form.last_name.label_tag }}
+                {{ form.last_name }}
+                {% for error in form.last_name.errors %}
+                <p class="error">{{ error }}</p>
+                {% endfor %}
+            </div>
+
+            <div class="form-group">
+                {{ form.tel.label_tag }}
+                {{ form.tel }}
+                {% for error in form.tel.errors %}
+                <p class="error">{{ error }}</p>
+                {% endfor %}
+            </div>
+
+            <div class="form-group">
+                {{ form.address.label_tag }}
+                {{ form.address }}
+                {% for error in form.address.errors %}
+                <p class="error">{{ error }}</p>
+                {% endfor %}
+            </div>
+
+            <div class="form-group">
+                {{ form.city.label_tag }}
+                {{ form.city }}
+                {% for error in form.city.errors %}
+                <p class="error">{{ error }}</p>
+                {% endfor %}
+            </div>
+
+            <div class="form-group">
+                {{ form.email.label_tag }}
+                {{ form.email }}
+                {% for error in form.email.errors %}
+                <p class="error">{{ error }}</p>
+                {% endfor %}
+            </div>
+
+            <div class="form-group">
+                {{ form.sexe.label_tag }}
+                {{ form.sexe }}
+                {% for error in form.sexe.errors %}
+                <p class="error">{{ error }}</p>
+                {% endfor %}
+            </div>
+
+            <div class="form-group">
+                {{ form.password.label_tag }}
+                {{ form.password }}
+                {% for error in form.password.errors %}
+                <p class="error">{{ error }}</p>
+                {% endfor %}
+            </div>
+
+            {% if form.non_field_errors %}
+                {% for error in form.non_field_errors %}
+                <p class="error">{{ error }}</p>
+                {% endfor %}
+            {% endif %}
+
+            <button type="submit">S'inscrire</button>
+        </form>
+
+
+        <!-- Formulaire de connexion -->
+        <div class="login-link">
+            <p>Vous avez déjà un compte ? <a href="{% url 'connexion'%}" id="loginLink">Se connecter</a></p>
+        </div>
+    </div>
+    
+
+
+        <script>
+            
+            document.addEventListener("DOMContentLoaded", function () {
+                const registrationForm = document.getElementById("registrationForm");
+                const loginForm = document.getElementById("loginForm");
+                const showLogin = document.getElementById("showLogin");
+                const showRegister = document.getElementById("showRegister");
+
+                if (showLogin) {
+                    showLogin.addEventListener("click", function (e) {
+                        e.preventDefault();
+                        registrationForm.style.display = "none";
+                        loginForm.style.display = "block";
+                    });
+                }
+
+                if (showRegister) {
+                    showRegister.addEventListener("click", function (e) {
+                        e.preventDefault();
+                        loginForm.style.display = "none";
+                        registrationForm.style.display = "block";
+                    });
+                }
+            });
+
+        </script>
+
+
+
+
+    {% endblock %}
+</body>
+</html>

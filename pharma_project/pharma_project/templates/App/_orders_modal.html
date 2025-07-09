@@ -1,0 +1,53 @@
+<style>
+.order-card {
+  background: #f9fafb;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(44,62,80,0.07);
+  padding: 18px 20px 14px 20px;
+  margin-bottom: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.order-card .pharmacy {
+  font-weight: 600;
+  color: #304D30;
+  font-size: 1.08em;
+}
+.order-card .date {
+  color: #888;
+  font-size: 0.98em;
+}
+.order-card .products {
+  margin: 6px 0 0 0;
+  font-size: 0.98em;
+}
+.order-card .status {
+  display: inline-block;
+  padding: 2px 12px;
+  border-radius: 12px;
+  font-size: 0.95em;
+  font-weight: 500;
+  background: #e0f7e9;
+  color: #22c55e;
+  margin-top: 4px;
+}
+.order-card .status.pending { background: #fffbe6; color: #eab308; }
+.order-card .status.confirmed { background: #e0f7e9; color: #22c55e; }
+</style>
+{% if orders %}
+  {% for order in orders %}
+    <div class="order-card">
+      <div class="date">{{ order.order_date|date:"d/m/Y H:i" }}</div>
+      <div class="pharmacy">{{ order.pharmacy }}</div>
+      <div class="products">
+        {% for item in order.orderitem_set.all %}
+          <span>{{ item.product.name }} <b>x{{ item.quantity }}</b></span>{% if not forloop.last %}, {% endif %}
+        {% endfor %}
+      </div>
+      <span class="status {{ order.status }}">{{ order.status|capfirst }}</span>
+    </div>
+  {% endfor %}
+{% else %}
+  <div style="text-align:center; color:#888;">Aucune commande</div>
+{% endif %} 

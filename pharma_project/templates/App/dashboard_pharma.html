@@ -98,6 +98,7 @@
             display: flex;
             flex-direction: column;
             overflow: hidden;
+            padding-left: 40px;
         }
 
         /* Header */
@@ -105,7 +106,7 @@
             display: flex;
             flex-direction: column;
             padding: 20px 30px;
-            border-bottom: 1px solid #e9ecef;
+            border-bottom: 1px solid #eff3f8c3;
             flex-shrink: 0;
         }
 
@@ -852,6 +853,88 @@
         .action-btn i {
             font-size: 18px;
         }
+
+        .header-dashboard {
+            width: 100%;
+            box-sizing: border-box;
+            min-height: 80px;
+            padding: 0 32px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            background: white;
+        }
+        .header-dashboard-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 80px;
+        }
+        .header-dashboard-pharmacy {
+            color: #222;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .header-dashboard-profile {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+        .header-dashboard-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background-color: #6c757d;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 22px;
+            object-fit: cover;
+        }
+        .header-dashboard-role {
+            color: #495057;
+            font-size: 15px;
+            font-weight: 500;
+        }
+        .header-dashboard-separator {
+            width: calc(100% + 40px);
+            height: 1px;
+            background-color: #90EE90;
+            margin: 0 0 0 -40px;
+        }
+        .header-dashboard-title {
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+        }
+        .header-dashboard-title h1 {
+            color: #222;
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 0;
+        }
+        .dashboard-page-title {
+            width: 100%;
+            text-align: left;
+            margin: 16px 0 8px 40px;
+            display: block;
+        }
+        .dashboard-page-title h1 {
+            color: #222;
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin: 0;
+            letter-spacing: 1px;
+        }
+        .dashboard-title-separator {
+            width: 120px;
+            height: 4px;
+            background: #90EE90;
+            margin: 0 auto 24px auto;
+            border-radius: 2px;
+        }
     </style>
 </head>
 <body>
@@ -862,41 +945,21 @@
         
         <ul class="nav-menu">
             <li class="nav-item">
-                <a href="#" class="nav-link active" data-page="accueil">
+                <a href="#" id="show-acceuil" class="nav-link">
                     <i class="fas fa-home nav-icon"></i>
                     Accueil
                 </a>
             </li>
             <li class="nav-item">
-                <a href="#" class="nav-link" data-page="produits">
-                    <i class="fas fa-pills nav-icon"></i>
+                <a href="#" id="show-produits" class="nav-link">
+                    <i class="fas fa-cube nav-icon"></i>
                     Produits
                 </a>
             </li>
-            
-            
             <li class="nav-item">
-                <a href="#" class="nav-link" data-page="inventaire">
-                    <i class="fas fa-boxes nav-icon"></i>
-                    Inventaire
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="#" class="nav-link" data-page="commandes">
+                <a href="#" id="show-commandes" class="nav-link">
                     <i class="fas fa-file-alt nav-icon"></i>
                     Commandes
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="#" class="nav-link" data-page="factures">
-                    <i class="fas fa-receipt nav-icon"></i>
-                    Factures
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="#" class="nav-link" data-page="utilisateurs">
-                    <i class="fas fa-users nav-icon"></i>
-                    Utilisateurs
                 </a>
             </li>
             <li class="nav-item" style="margin-top: 30px;">
@@ -909,125 +972,51 @@
     </div>
 
     <div class="main-content">
-        <div class="header">
-            <div class="header-section-top">
-                <div class="header-info">
-                    <p>Pharmacy Name</p>
-                </div>
-                <div class="header-right-section">
-                    <button class="print-btn">
-                        <i class="fas fa-print print-icon"></i>
-                    </button>
-                    <div class="user-profile">
-                        <div class="user-avatar">
-                            <i class="fas fa-user"></i>
-                        </div>
-                        <div class="user-name">Auxiliaire</div>
+        <!-- HEADER FIXE -->
+        <div class="header-dashboard">
+            <div class="header-dashboard-top">
+                <div class="header-dashboard-pharmacy">{{ pharmacy.name }}</div>
+                <div class="header-dashboard-profile">
+                    
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        {% if user.photo %}
+                            <img src="{{ user.photo.url }}" alt="Profil" class="header-dashboard-avatar"/>
+                        {% else %}
+                            <div class="header-dashboard-avatar">
+                                <i class="fas fa-user"></i>
+                            </div>
+                        {% endif %}
+                        <div class="header-dashboard-role">{{ user.role }}</div>
                     </div>
                 </div>
             </div>
-            <div class="header-separator-horizontal"></div>
-            <div class="header-section-bottom">
-                <h1>Accueil</h1>
-            </div>
+            <div class="header-dashboard-separator"></div>
         </div>
+        <!-- Titre de la page juste en dessous du header -->
+        <div class="dashboard-page-title">
+            <h1>{{ page_title }}</h1>
+        </div>
+        <div class="header-dashboard-separator"></div>
+        <!-- FIN HEADER FIXE -->
 
-        <div id="produits-content" class="content-section">
-            <!-- Le contenu sera chargé dynamiquement depuis produits.php -->
+        <!-- CONTENU PRINCIPAL -->
+        <div id="main-content" style="flex: 1; display: flex; flex-direction: column;">
+            
+
+            <div id="produits-content" class="content-section">
+                <!-- Le contenu sera chargé dynamiquement depuis produits.php -->
+            </div>
         </div>
     </div>
 
     <!-- Contenu de la page Commandes -->
-    <div id="commandes-content" class="content-section" style="display: none;">
-        <h1 class="page-title">Nos commandes</h1>
-
-        <div class="search-container">
-            <div class="search-wrapper">
-                <i class="fas fa-search search-icon-commandes"></i>
-                <input type="text" class="search-input-commandes" placeholder="chercher un produit">
-            </div>
-        </div>
-
-        <div class="table-container-commandes">
-            <table class="table-commandes">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Date</th>
-                        <th>Client</th>
-                        <th>Localisation</th>
-                        <th>Statut</th>
-                        <th>Nbre de Produits</th>
-                        <th>Montant total</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>003</td>
-                        <td class="date-info">7H30<br>min</td>
-                        <td class="client-info">Ulrich<br>stanley</td>
-                        <td>Calavi , fifotor</td>
-                        <td><span class="status-badge status-pending">En attente</span></td>
-                        <td>4</td>
-                        <td class="amount">89000F</td>
-                    </tr>
-                    <tr>
-                        <td>003</td>
-                        <td class="date-info">7H30<br>min</td>
-                        <td class="client-info">Ulrich<br>stanley</td>
-                        <td>Calavi , fifotor</td>
-                        <td><span class="status-badge status-in-progress">En cours</span></td>
-                        <td>4</td>
-                        <td class="amount">89000F</td>
-                    </tr>
-                    <tr>
-                        <td>003</td>
-                        <td class="date-info">7H30<br>min</td>
-                        <td class="client-info">Ulrich<br>stanley</td>
-                        <td>Calavi , fifotor</td>
-                        <td><span class="status-badge status-delivered">Livré</span></td>
-                        <td>4</td>
-                        <td class="amount">89000F</td>
-                    </tr>
-                    <tr>
-                        <td>003</td>
-                        <td class="date-info">7H30<br>min</td>
-                        <td class="client-info">Ulrich<br>stanley</td>
-                        <td>Calavi , fifotor</td>
-                        <td><span class="status-badge status-delivered">Livré</span></td>
-                        <td>4</td>
-                        <td class="amount">89000F</td>
-                    </tr>
-                    <tr>
-                        <td>003</td>
-                        <td class="date-info">7H30<br>min</td>
-                        <td class="client-info">Ulrich<br>stanley</td>
-                        <td>Calavi , fifotor</td>
-                        <td><span class="status-badge status-delivered">Livré</span></td>
-                        <td>4</td>
-                        <td class="amount">89000F</td>
-                    </tr>
-                </tbody>
-            </table>
-
-            <div class="pagination-container-commandes">
-                <div class="pagination-info">1 sur 200</div>
-                <div class="pagination-controls">
-                    <div class="pagination-commandes">
-                        <button class="pagination-btn">‹</button>
-                        <button class="pagination-btn active">1</button>
-                        <button class="pagination-btn">›</button>
-                    </div>
-                    <button class="print-btn-commandes">Imprimer</button>
-                </div>
-            </div>
-        </div>
-    </div>
+    
 
     <!-- Contenu de la page d'Accueil -->
     <!-- SUPPRIMÉ : plus de div #accueil-content -->
 </body>
 
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     // Gestion de la navigation dynamique
     document.addEventListener('DOMContentLoaded', function() {
@@ -1138,6 +1127,37 @@
                 window.location.href = this.href;
             });
         }
+    });
+
+    $(document).ready(function(){
+        $('#show-commandes').on('click', function(e){
+            e.preventDefault();
+            $.ajax({
+                url: "{% url 'commandes_partial' %}",
+                type: "GET",
+                success: function(data){
+                    $('#main-content').html(data);
+                    $('#page-title').text('Commandes');
+                },
+                error: function(){
+                    alert("Erreur lors du chargement des commandes.");
+                }
+            });
+        });
+        $('#show-produits').on('click', function(e){
+            e.preventDefault();
+            $.ajax({
+                url: "{% url 'produits_partial' %}",
+                type: "GET",
+                success: function(data){
+                    $('#main-content').html(data);
+                    $('#page-title').text('Produits');
+                },
+                error: function(){
+                    alert("Erreur lors du chargement des produits.");
+                }
+            });
+        });
     });
 </script>
 </html>

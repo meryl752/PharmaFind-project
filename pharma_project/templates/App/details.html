@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Produit - Polo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            display: flex;
+            gap: 30px;
+        }
+
+        /* Section des miniatures */
+        .thumbnails {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            width: 80px;
+        }
+
+        .thumbnail {
+            width: 70px;
+            height: 70px;
+            border: 2px solid #ddd;
+            cursor: pointer;
+            background-color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .thumbnail.active {
+            border-color: #333;
+        }
+
+        .thumbnail img {
+            width: 50px;
+            height: 50px;
+            object-fit: contain;
+        }
+
+        /* Section image principale */
+        .main-image-section {
+            flex: 1;
+            max-width: 600px;
+            position: relative;
+        }
+
+        .main-image {
+            width: 100%;
+            height: 500px;
+            background-color: #e8e8e8;
+            border: 1px solid #ddd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .main-image img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .heart-icon {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 40px;
+            height: 40px;
+            background-color: white;
+            border: 1px solid #ddd;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .nav-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 40px;
+            height: 40px;
+            background-color: white;
+            border: 1px solid #ddd;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .nav-arrow.right {
+            right: 15px;
+        }
+
+        .nav-arrow.left {
+            left: 15px;
+        }
+
+        /* Section des détails produit */
+        .product-details {
+            width: 350px;
+            background-color: white;
+            padding: 25px;
+            border: 1px solid #ddd;
+            height: fit-content;
+        }
+
+        .price-section {
+            text-align: right;
+            margin-bottom: 25px;
+        }
+
+        .price-label {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .price {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .section-title a {
+            color: #333;
+            text-decoration: underline;
+            font-weight: normal;
+            float: right;
+        }
+
+        .color-options {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        .color-option {
+            width: 40px;
+            height: 40px;
+            border: 2px solid #ddd;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .color-option.green {
+            background-color: #2d5a3d;
+        }
+
+        .color-option.white {
+            background-color: white;
+        }
+
+        .color-option.active {
+            border-color: #333;
+        }
+
+        .action-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .btn {
+            padding: 12px 20px;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            text-align: center;
+            text-decoration: none;
+            display: block;
+        }
+
+        .btn-primary {
+            background-color: #ff6b35;
+            color: white;
+        }
+
+        .btn-secondary {
+            background-color: white;
+            color: #333;
+            border: 1px solid #ddd;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .thumbnails {
+                flex-direction: row;
+                width: 100%;
+                overflow-x: auto;
+            }
+
+            .product-details {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Section des miniatures -->
+        <div class="thumbnails">
+            <div class="thumbnail active">
+                <svg width="50" height="50" viewBox="0 0 50 50">
+                    <rect x="10" y="15" width="30" height="25" fill="#2d5a3d" stroke="#1a3d2b" stroke-width="1"/>
+                    <rect x="15" y="10" width="20" height="8" fill="#2d5a3d" stroke="#1a3d2b" stroke-width="1"/>
+                    <circle cx="25" cy="25" r="3" fill="#000"/>
+                </svg>
+            </div>
+            <div class="thumbnail">
+                <svg width="50" height="50" viewBox="0 0 50 50">
+                    <rect x="10" y="15" width="30" height="25" fill="#2d5a3d" stroke="#1a3d2b" stroke-width="1"/>
+                    <rect x="15" y="10" width="20" height="8" fill="#2d5a3d" stroke="#1a3d2b" stroke-width="1"/>
+                </svg>
+            </div>
+            <div class="thumbnail">
+                <svg width="50" height="50" viewBox="0 0 50 50">
+                    <rect x="10" y="15" width="30" height="25" fill="#2d5a3d" stroke="#1a3d2b" stroke-width="1"/>
+                    <rect x="15" y="10" width="20" height="8" fill="#2d5a3d" stroke="#1a3d2b" stroke-width="1"/>
+                </svg>
+            </div>
+            <div class="thumbnail">
+                <svg width="50" height="50" viewBox="0 0 50 50">
+                    <rect x="5" y="10" width="40" height="30" fill="#2d5a3d" stroke="#1a3d2b" stroke-width="1"/>
+                    <circle cx="25" cy="20" r="2" fill="#fff"/>
+                    <path d="M20 25 L30 25 M20 30 L30 30" stroke="#fff" stroke-width="1"/>
+                </svg>
+            </div>
+            <div class="thumbnail">
+                <svg width="50" height="50" viewBox="0 0 50 50">
+                    <rect x="10" y="15" width="30" height="25" fill="#2d5a3d" stroke="#1a3d2b" stroke-width="1"/>
+                    <rect x="15" y="10" width="20" height="8" fill="#2d5a3d" stroke="#1a3d2b" stroke-width="1"/>
+                </svg>
+            </div>
+            <div class="thumbnail">
+                <svg width="50" height="50" viewBox="0 0 50 50">
+                    <rect x="10" y="15" width="30" height="25" fill="#2d5a3d" stroke="#1a3d2b" stroke-width="1"/>
+                    <rect x="15" y="10" width="20" height="8" fill="#2d5a3d" stroke="#1a3d2b" stroke-width="1"/>
+                </svg>
+            </div>
+        </div>
+
+        <!-- Section image principale -->
+        <div class="main-image-section">
+            <div class="main-image">
+                <svg width="300" height="400" viewBox="0 0 300 400">
+                    <!-- Corps de la personne -->
+                    <rect x="100" y="50" width="100" height="150" fill="#e8e8e8" stroke="#ddd"/>
+                    
+                    <!-- Polo gris -->
+                    <rect x="110" y="80" width="80" height="100" fill="#c0c0c0" stroke="#aaa"/>
+                    
+                    <!-- Col du polo -->
+                    <rect x="125" y="75" width="50" height="15" fill="#c0c0c0" stroke="#aaa"/>
+                    
+                    <!-- Boutons -->
+                    <circle cx="150" cy="100" r="2" fill="#999"/>
+                    <circle cx="150" cy="110" r="2" fill="#999"/>
+                    
+                    <!-- Bras -->
+                    <rect x="85" y="90" width="25" height="60" fill="#c0c0c0" stroke="#aaa"/>
+                    <rect x="190" y="90" width="25" height="60" fill="#c0c0c0" stroke="#aaa"/>
+                    
+                    <!-- Pantalon -->
+                    <rect x="115" y="180" width="70" height="120" fill="#333"/>
+                </svg>
+                
+                <div class="heart-icon">♡</div>
+                <div class="nav-arrow left">‹</div>
+                <div class="nav-arrow right">›</div>
+            </div>
+        </div>
+
+        <!-- Section des détails produit -->
+        <div class="product-details">
+            <div class="price-section">
+                <div class="price-label">2+ 300 piece</div>
+                <div class="price">3,50 $US</div>
+            </div>
+
+            <div class="section-title">
+                Options
+                <a href="#">Sélectionner</a>
+            </div>
+
+            <div style="margin-bottom: 20px;">
+                <div style="font-weight: 600; margin-bottom: 10px;">Couleur(1): Vert</div>
+                <div class="color-options">
+                    <div class="color-option green active"></div>
+                    <div class="color-option white"></div>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <button class="btn btn-primary">Demander</button>
+                <button class="btn btn-secondary">Discuter en ligne</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Gestion des miniatures
+        const thumbnails = document.querySelectorAll('.thumbnail');
+        thumbnails.forEach(thumbnail => {
+            thumbnail.addEventListener('click', function() {
+                thumbnails.forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        // Gestion des couleurs
+        const colorOptions = document.querySelectorAll('.color-option');
+        const colorText = document.querySelector('[style*="font-weight: 600"]');
+        
+        colorOptions.forEach(option => {
+            option.addEventListener('click', function() {
+                colorOptions.forEach(o => o.classList.remove('active'));
+                this.classList.add('active');
+                
+                if (this.classList.contains('green')) {
+                    colorText.textContent = 'Couleur(1): Vert';
+                } else if (this.classList.contains('white')) {
+                    colorText.textContent = 'Couleur(1): Blanc';
+                }
+            });
+        });
+
+        // Gestion des boutons d'action
+        document.querySelector('.btn-primary').addEventListener('click', function() {
+            alert('Demande envoyée!');
+        });
+
+        document.querySelector('.btn-secondary').addEventListener('click', function() {
+            alert('Ouverture du chat...');
+        });
+    </script>
+</body>
+</html>

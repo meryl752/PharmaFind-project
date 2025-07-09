@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -6,7 +7,7 @@
     <title>Medico Store - Pharmacie en ligne</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     
     <style>
         * {
@@ -25,221 +26,6 @@
             max-width: 1200px;
             margin: 0 auto;
             padding: 0 20px;
-        }
-
-        /* Header */
-        .header {
-            background: white;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            padding: 15px 0;
-        }
-
-        .header-content {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 20px;
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .logo-icon, .logo-sub {
-            display: none !important;
-        }
-
-        .logo-text {
-            font-size: 24px;
-            font-weight: bold;
-            color: #1f2937;
-        }
-
-        .search-container {
-            flex: 1;
-            max-width: 600px;
-            position: relative;
-        }
-
-        .search-wrapper {
-            display: flex;
-            align-items: center;
-            background: #fafcfa;
-            border: 1.5px solid #4F624E;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: none;
-            padding: 0;
-            height: 48px;
-            position: relative;
-        }
-
-        .search-select-wrapper {
-            position: relative;
-            display: flex;
-            align-items: center;
-            min-width: 180px;
-        }
-
-        .search-select {
-            padding: 0 32px 0 18px;
-            border: none;
-            background: transparent;
-            color: #4F624E;
-            font-size: 13px;
-            min-width: 160px;
-            height: 48px;
-            outline: none;
-            font-family: 'Poppins', sans-serif;
-            appearance: none;
-            cursor: pointer;
-        }
-
-        .search-select-arrow {
-            position: absolute;
-            right: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            pointer-events: none;
-            font-size: 16px;
-            color: #4F624E;
-        }
-
-        .pipe-separator {
-            width: 1px;
-            height: 28px;
-            background: #d1d5db;
-            margin: 0 10px;
-            display: inline-block;
-        }
-
-        .search-input {
-            flex: 1;
-            padding: 0 48px 0 18px;
-            border: none;
-            outline: none;
-            font-size: 13px;
-            background: transparent;
-            color: #304D30;
-            font-family: 'Poppins', sans-serif;
-            height: 48px;
-        }
-
-        .search-input::placeholder {
-            color: #8ca08c;
-            opacity: 1;
-        }
-
-        .search-btn {
-            position: absolute;
-            right: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: none;
-            border: none;
-            color: #222;
-            font-size: 22px;
-            cursor: pointer;
-            padding: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            transition: background 0.2s, color 0.2s;
-            width: 32px;
-            height: 32px;
-        }
-
-        .search-btn:hover {
-            background: none;
-            color: #000;
-        }
-
-        .search-btn i {
-            color: #222 !important;
-        }
-
-        .auth-buttons {
-            display: flex;
-            gap: 20px;
-            margin-left: 30px;
-        }
-
-        .btn {
-            padding: 8px 16px;
-            border-radius: 6px;
-            font-size: 14px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s;
-            text-decoration: none;
-            display: inline-block;
-            text-align: center;
-        }
-
-        .btn-outline {
-            color: #304D30 !important;
-            background: #fff;
-            border: 1.5px solid #4F624E;
-            box-shadow: none;
-            outline: none;
-            position: relative;
-            overflow: hidden;
-            border-radius: 30px;
-            transition: color 0.2s, border 0.2s, background 0.2s;
-        }
-
-        .btn-outline:hover {
-            color: #304D30;
-            background: #f9fafb;
-            border: 1.5px solid #304D30;
-        }
-
-        .btn-outline .arrow {
-            display: inline-block;
-            opacity: 0;
-            transform: translateX(-10px);
-            transition: opacity 0.2s, transform 0.2s;
-            margin-left: 8px;
-            color: #304D30;
-            font-size: 16px;
-        }
-
-        .btn-primary {
-            background: #34AC4F;
-            color: white;
-            border: none;
-        }
-
-        .btn-primary:hover {
-            background: #16a34a;
-        }
-
-        .btn-yellow, .btn-outline {
-            border-radius: 30px;
-            border: 1.5px solid #4F624E;
-            box-shadow: none;
-            outline: none;
-        }
-
-        .btn-yellow {
-            background: #FFFF0D;
-            color: #1f2937;
-            border: 1.5px solid #FFFF0D;
-            box-shadow: none;
-            outline: none;
-            transition: background 0.2s, color 0.2s, border 0.2s;
-        }
-
-        .btn-yellow:hover {
-            background: #ffe600;
-            color: #304D30;
-            border: 1.5px solid #ffe600;
-            box-shadow: 0 2px 8px rgba(255, 230, 0, 0.15);
-            transform: translateY(-2px) scale(1.03);
-            transition: background 0.2s, color 0.2s, border 0.2s, box-shadow 0.2s, transform 0.2s;
         }
 
         /* Hero Section */
@@ -564,13 +350,19 @@
         .showcase-card {
             display: flex;
             flex-direction: row;
-            align-items: stretch;
+            align-items: center;
             justify-content: space-between;
             border-radius: 12px;
             overflow: hidden;
-            padding: 28px 28px 28px 32px;
-            min-height: 170px;
+            padding: 18px 18px 18px 18px;
+            width: 340px;
+            height: 260px;
+            min-width: 340px;
+            max-width: 340px;
+            min-height: 260px;
+            max-height: 260px;
             margin-bottom: 0;
+            gap: 18px;
         }
 
         .showcase-card:nth-child(2),
@@ -590,24 +382,21 @@
         }
 
         .showcase-card:nth-child(1) .showcase-image {
-            height: 180px;
-            width: 180px;
-            min-width: 140px;
-            max-width: 220px;
-            background: #fff;
-            border-radius: 18px;
+            height: 240px;
+            width: 260px;
+            min-width: 180px;
+            max-width: 320px;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 18px;
-            box-shadow: 0 2px 12px rgba(44,62,80,0.08);
+            padding: 24px;
             margin: 0 0 0 32px;
         }
         .showcase-card:nth-child(1) .showcase-image img {
             width: 100%;
             height: 100%;
-            object-fit: contain;
-            border-radius: 12px;
+            object-fit: cover;
+            border-radius: 16px;
             background: transparent;
             transition: transform 0.35s cubic-bezier(.4,2,.6,1);
         }
@@ -620,7 +409,8 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            height: 180px;
+            height: 100%;
+            min-height: 180px;
             background: transparent;
         }
         .showcase-image img {
@@ -629,9 +419,6 @@
             object-fit: contain;
             display: block;
             margin: 0 auto 12px auto;
-            box-shadow: 0 8px 32px rgba(44,62,80,0.18), 0 2px 8px rgba(44,62,80,0.10);
-            border-radius: 16px;
-            background: #fff;
         }
 
         .showcase-info {
@@ -640,27 +427,34 @@
             text-align: left;
             display: flex;
             flex-direction: column;
-            height: 100%;
-            justify-content: flex-end;
+            justify-content: center;
             align-items: flex-start;
+            height: 100%;
             max-width: 55%;
             word-break: break-word;
             overflow-wrap: break-word;
         }
 
-        .showcase-title {
-            font-size: 17px;
+        .showcase-card:nth-child(1) .showcase-title {
+            font-size: 2.1rem;
             font-weight: bold;
             color: #1f2937;
-            margin-bottom: 6px;
+            margin-bottom: 12px;
             word-break: break-word;
             overflow-wrap: break-word;
         }
-
-        .showcase-description {
-            font-size: 10px;
-            margin-bottom: 8px;
+        .showcase-card:nth-child(1) .showcase-description {
+            font-size: 1.15rem;
+            margin-bottom: 18px;
             margin-top: 0;
+            word-break: break-word;
+            overflow-wrap: break-word;
+        }
+        .showcase-card:nth-child(1) .showcase-price {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #1f2937;
+            margin-bottom: 0;
             word-break: break-word;
             overflow-wrap: break-word;
         }
@@ -675,7 +469,7 @@
         }
 
         .showcase-price {
-            font-size: 12px;
+            font-size: 1.3rem;
             font-weight: bold;
             color: #1f2937;
             margin-bottom: 0;
@@ -1568,76 +1362,15 @@
 
 </head>
 <body>
-    <!-- Header -->
-    <header class="header">
-        <div class="container">
-            <div class="header-content">
-                <div class="logo">
-                    <span class="logo-text">PharmaFind</span>
-                </div>
-
-                <div class="search-container">
-                    <form class="search-wrapper" method="get" action="{% url 'search' %}">
-                        <span class="search-select-wrapper">
-                            <select class="search-select" name="category" id="categorySelect">
-                                <option value="">Toutes les catégories</option>
-                                {% for cat in categories %}
-                                    <option value="{{ cat.id }}" {% if cat.id|stringformat:'s' == selected_categorie %}selected{% endif %}>{{ cat.name }}</option>
-                                {% endfor %}
-                            </select>
-                            
-                            <span class="search-select-arrow">▼</span>
-                        </span>
-                        <span class="pipe-separator"></span>
-                        <input type="text" class="search-input" name="q" placeholder="Rechercher une pharmacie, un médicament">
-                        <button class="search-btn" type="submit" tabindex="-1"><i class="fas fa-search"></i></button>
-                    </form>
-                </div>
-                <div class="loader" id="searchLoader" style="display:none;"></div>
-                {% if not user.is_authenticated %}
-                <div class="auth-buttons">
-                    <a href="{% url 'connexion' %}" class="btn btn-outline">Connexion</a>
-                    <a href="{% url 'Ins' %}" class="btn btn-primary">Inscription</a>
-                </div>
-                {% endif %}
-                {% if user.is_authenticated %}
-                <div class="quick-access-icons" style="display: flex; gap: 18px; align-items: center;">
-                    <a href="#" title="Notifications" class="icon-link notification-icon" id="notificationBell">
-                        <i class="fas fa-bell"></i>
-                        <span class="notification-badge" id="notificationBadge">3</span>
-                    </a>
-                    <a href="{% url 'reservations' %}" title="Réservations" class="icon-link"><i class="fas fa-calendar-check"></i></a>
-                    <a href="{% url 'commandes' %}" title="Commandes" class="icon-link"><i class="fas fa-box"></i></a>
-                    <button type="button" title="Profil" class="profile-initials-circle" id="profileDropdownBtn">
-                        {{ user.first_name|slice:":1"|upper }}{{ user.last_name|slice:":1"|upper }}
-                    </button>
-                </div>
-                <div class="profile-dropdown" id="profileDropdownMenu">
-                    <div class="profile-dropdown-header">
-                        <div class="profile-dropdown-initials">{{ user.first_name|slice:":1"|upper }}{{ user.last_name|slice:":1"|upper }}</div>
-                        <div class="profile-dropdown-name">{{ user.first_name }} {{ user.last_name }}</div>
-                    </div>
-                    <div class="profile-dropdown-separator"></div>
-                    <a href="{% url 'reservations' %}"><i class="fas fa-calendar-check"></i> Réservations</a>
-                    <div class="profile-dropdown-separator"></div>
-                    <a href="{% url 'commandes' %}"><i class="fas fa-box"></i> Commandes</a>
-                    <div class="profile-dropdown-separator"></div>
-                    <a href="{% url 'profil' %}?settings=1"><i class="fas fa-cog"></i> Paramètres</a>
-                    <div class="profile-dropdown-separator"></div>
-                    <div style="flex:1"></div>
-                    <a href="{% url 'connexion' %}">Changer de compte</a>
-                </div>
-                {% endif %}
-            </div>
-        </div>
-    </header>
+    {% include 'header.html' with categories=categories selected_categorie=selected_categorie query=query user=user %}
 
     <!-- Hero Section -->
     <section class="hero">
         <div class="container">
             <h1>Trouvez votre pharmacie,<br>en un instant.</h1>
             <p>Localisez une pharmacie, vérifiez vos médicaments
-et réservez en toute simplicité où que vous soyez.</p>
+                et réservez en toute simplicité où que vous soyez.
+            </p>
             <div class="hero-buttons">
                 <a href="#" class="btn btn-yellow">Trouver une pharmacie</a>
                 <a href="#" class="btn btn-outline" style="background: white;"><span>Chercher un médicament</span><span class="arrow">→</span></a>
@@ -1679,6 +1412,7 @@ et réservez en toute simplicité où que vous soyez.</p>
                 </div>
             </div>
         </div>
+                <span class="promo-badge">25% OFF</span>
     </section>
 
     <!-- Popular Medications -->
@@ -1697,6 +1431,7 @@ et réservez en toute simplicité où que vous soyez.</p>
                                 {% else %}
                                     <img src="https://via.placeholder.com/200x180?text=Produit" alt="{{ product.name }}">
                                 {% endif %}
+                <span class="promo-badge">25% OFF</span>
                                 {% if product.category_name %}
                                     <span class="product-category badge-categorie">{{ product.category_name }}</span>
                                 {% endif %}
@@ -1715,6 +1450,7 @@ et réservez en toute simplicité où que vous soyez.</p>
                     {% else %}
                         <div class="product-card" style="opacity:0.5;filter:grayscale(1);background:#f3f4f6;display:flex;align-items:center;justify-content:center;">
                             <span style="color:#bbb;font-size:1.1em;">Aucun produit</span>
+                <span class="promo-badge">25% OFF</span>
                         </div>
                     {% endif %}
                 {% endfor %}
@@ -1732,30 +1468,210 @@ et réservez en toute simplicité où que vous soyez.</p>
         <h2 class="section-title" style="margin-bottom:24px;">Cosmétiques et hygiène de la peau</h2>
     </div>
 
-    <!-- Product Showcase -->
-    <section class="section showcase">
-        <div class="container">
-            <div class="showcase-grid">
-                {% for product in cosmetic_showcase_products %}
-                <div class="showcase-card">
-                    <div class="showcase-info">
-                        <div class="discount-badge">Cosmétique</div>
-                        <h3 class="showcase-title">{{ product.name }}</h3>
-                        <p class="showcase-description">{{ product.description|truncatechars:60 }}</p>
-                        <div class="showcase-price">{{ product.price }} FCFA</div>
-                    </div>
-                    <div class="showcase-image">
-                        {% if product.photo %}
-                        <img src="{{ product.photo.url }}" alt="{{ product.name }}">
-                        {% else %}
-                        <img src="https://via.placeholder.com/200x180?text=Produit" alt="{{ product.name }}">
-                        {% endif %}
-                    </div>
+    <!-- Product Showcase à la façon de l'exemple fourni -->
+    <section class="section showcase-cosmetic">
+      <div class="container">
+        <div class="cosmetic-grid">
+          {% for product in cosmetic_showcase_products %}
+            {% if forloop.first %}
+            <!-- Grande card à gauche -->
+            <div class="cosmetic-card big-card">
+              <div class="cosmetic-card-content">
+                <div class="cosmetic-title">{{ product.name }}</div>
+                <div class="cosmetic-desc">{{ product.description|truncatechars:60 }}</div>
+                <div class="cosmetic-prices">
+                  <span class="new-price">{{ product.price }} FCFA</span>
                 </div>
-                {% endfor %}
+              </div>
+              <div class="cosmetic-card-img">
+                {% if product.photo %}
+                  <img src="{{ product.photo.url }}" alt="{{ product.name }}">
+                {% else %}
+                  <img src="https://via.placeholder.com/200x180?text=Produit" alt="{{ product.name }}">
+                {% endif %}
+              </div>
             </div>
+            {% elif forloop.counter == 2 %}
+            <!-- Petite card en haut à droite -->
+            <div class="cosmetic-card small-card yellow-card">
+              <div class="cosmetic-card-content">
+                <div class="cosmetic-title">{{ product.name }}</div>
+                <div class="cosmetic-desc">{{ product.description|truncatechars:60 }}</div>
+                <div class="cosmetic-prices">
+                  <span class="new-price">{{ product.price }} FCFA</span>
+                </div>
+              </div>
+              <div class="cosmetic-card-img">
+                {% if product.photo %}
+                    <img src="{{ product.photo.url }}" alt="{{ product.name }}">
+                {% else %}
+                    <img src="https://via.placeholder.com/200x180?text=Produit" alt="{{ product.name }}">
+                {% endif %}
+              </div>
+            </div>
+            {% elif forloop.counter == 3 %}
+            <!-- Petite card en bas à droite -->
+            <div class="cosmetic-card small-card green-card">
+              <div class="cosmetic-card-content">
+                <div class="cosmetic-title">{{ product.name }}</div>
+                <div class="cosmetic-desc">{{ product.description|truncatechars:60 }}</div>
+                <div class="cosmetic-prices">
+                  <span class="new-price">{{ product.price }} FCFA</span>
+                </div>
+              </div>
+              <div class="cosmetic-card-img">
+                {% if product.photo %}
+                    <img src="{{ product.photo.url }}" alt="{{ product.name }}">
+                {% else %}
+                    <img src="https://via.placeholder.com/200x180?text=Produit" alt="{{ product.name }}">
+                {% endif %}
+              </div>
+            </div>
+            {% endif %}
+          {% endfor %}
         </div>
+      </div>
     </section>
+
+    <style>
+      .cosmetic-grid {
+        display: grid;
+        grid-template-columns: 2fr 1.7fr;
+        grid-template-rows: 1fr 1fr;
+        grid-template-areas:
+          "big small1"
+          "big small2";
+        column-gap: 8px;
+        row-gap: 24px;
+        max-width: 1100px;
+        margin: 0 auto;
+      }
+      .cosmetic-card {
+        display: flex;
+        align-items: center;
+        border-radius: 18px;
+        box-shadow: 0 6px 24px rgba(44,62,80,0.10);
+        padding: 32px 32px 32px 36px;
+        background: #f7fafc;
+        min-width: 0;
+        min-height: 0;
+        overflow: hidden;
+      }
+      .big-card {
+        grid-area: big;
+        background: #eaf7fc;
+        min-width: 420px;
+        max-width: 520px;
+        min-height: 320px;
+        max-height: 380px;
+        flex-direction: row;
+        transition: transform 0.25s cubic-bezier(.4,2,.6,1), box-shadow 0.25s cubic-bezier(.4,2,.6,1);
+      }
+      .big-card:hover {
+        transform: scale(1.04);
+        box-shadow: 0 8px 32px rgba(44,62,80,0.18);
+        z-index: 2;
+      }
+      .small-card {
+        flex-direction: row;
+        min-width: 320px;
+        max-width: 500px;
+        min-height: 140px;
+        max-height: 180px;
+        background: #fffbe6;
+        transition: transform 0.25s cubic-bezier(.4,2,.6,1), box-shadow 0.25s cubic-bezier(.4,2,.6,1);
+      }
+      .small-card:hover {
+        transform: scale(1.04);
+        box-shadow: 0 8px 32px rgba(44,62,80,0.18);
+        z-index: 2;
+      }
+      .yellow-card { background: #fffbe6; grid-area: small1; }
+      .green-card { background: #e8faef; grid-area: small2; }
+      .cosmetic-card-content {
+        flex: 1 1 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: flex-start;
+        gap: 10px;
+      }
+      .cosmetic-title {
+        font-size: 1.25rem;
+        font-weight: bold;
+        color: #222;
+        margin-bottom: 4px;
+      }
+      .cosmetic-desc {
+        font-size: 1rem;
+        color: #444;
+        margin-bottom: 8px;
+      }
+      .cosmetic-prices {
+        display: flex;
+      .new-price {
+        font-size: 1.3rem;
+        font-weight: bold;
+        color: #111;
+      }
+      .tax-info {
+        font-size: 0.95rem;
+        color: #888;
+        margin-left: 8px;
+      }
+      .cosmetic-card-img {
+        flex: 0 0 140px;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        height: 100%;
+        margin-left: 18px;
+      }
+      .cosmetic-card-img img {
+        max-width: 120px;
+        max-height: 160px;
+        object-fit: contain;
+        display: block;
+        border-radius: 12px;
+        background: none;
+        box-shadow: none;
+      }
+      .promo-badge {
+        display: inline-block;
+        background: #22c55e;
+        color: #fff;
+        font-size: 0.95rem;
+        font-weight: 600;
+        border-radius: 8px;
+        padding: 4px 14px;
+        margin-bottom: 8px;
+        letter-spacing: 0.5px;
+        box-shadow: 0 1px 4px rgba(34,197,94,0.08);
+      }
+      @media (max-width: 900px) {
+        .cosmetic-grid {
+          grid-template-columns: 1fr;
+          grid-template-rows: auto auto auto;
+          grid-template-areas:
+            "big"
+            "small1"
+            "small2";
+        }
+        .big-card, .small-card {
+          min-width: 0;
+          max-width: 100%;
+        }
+      }
+      .big-card .cosmetic-card-img img {
+        max-width: 180px;
+        max-height: 220px;
+        object-fit: contain;
+        display: block;
+        border-radius: 12px;
+        background: none;
+        box-shadow: none;
+      }
+    </style>
 
     <!-- Nearby Pharmacies -->
     <section class="section">
@@ -1794,7 +1710,9 @@ et réservez en toute simplicité où que vous soyez.</p>
                             </div>
                         </div>
                     {% empty %}
-                        <p>Aucune pharmacie trouvée dans votre ville/quartier.</p>
+                        <div style="text-align:center; margin-top:18px;">
+                            <img src="{% static 'No data-rafiki.svg' %}" alt="Aucune pharmacie trouvée" style="max-width:320px;width:100%;height:auto;">
+                        </div>
                     {% endfor %}
                 {% else %}
                     <p>Connectez-vous pour voir les pharmacies proches de chez vous.</p>
@@ -1802,68 +1720,6 @@ et réservez en toute simplicité où que vous soyez.</p>
             </div>
         </div>
     </section>
-
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <h3>Contact</h3>
-                    <div class="contact-item">
-                        <span>📍</span>
-                        <span>123 Road, Dhaka, Bangladesh</span>
-                    </div>
-                    <div class="contact-item">
-                        <span>📞</span>
-                        <span>+8801234567890</span>
-                    </div>
-                    <div class="contact-item">
-                        <span>✉️</span>
-                        <span>support@medico@gmail.com</span>
-                    </div>
-                </div>
-                <div class="footer-section">
-                    <h3>Quick Links</h3>
-                    <ul>
-                        <li><a href="#">Home</a></li>
-                        <li><a href="#">About</a></li>
-                        <li><a href="#">Services</a></li>
-                    </ul>
-                </div>
-                <div class="footer-section">
-                    <h3>Specialties</h3>
-                    <ul>
-                        <li><a href="#">Anaesthesiology</a></li>
-                        <li><a href="#">Psychiatry</a></li>
-                        <li><a href="#">General surgery</a></li>
-                    </ul>
-                </div>
-                <div class="footer-section">
-                    <h3>Services</h3>
-                    <ul>
-                        <li><a href="#">Medical</a></li>
-                        <li><a href="#">Operation</a></li>
-                    </ul>
-                </div>
-                <div class="footer-section">
-                    <h3>Social Media</h3>
-                    <div class="social-links">
-                        <a href="#" class="social-link facebook">f</a>
-                        <a href="#" class="social-link linkedin">in</a>
-                        <a href="#" class="social-link instagram">📷</a>
-                        <a href="#" class="social-link youtube">▶️</a>
-                    </div>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <div>© 2023 HEALTHY. All rights reserved.</div>
-                <div class="footer-links">
-                    <a href="#">Terms and Conditions</a>
-                    <a href="#">Privacy Policy</a>
-                </div>
-            </div>
-        </div>
-    </footer>
 
     <!-- Special Offer -->
     <section class="section special-offer">
@@ -1880,7 +1736,7 @@ et réservez en toute simplicité où que vous soyez.</p>
                     <a href="#" class="btn btn-primary">Commandez dès maintenant →</a>
                 </div>
                 <div class="offer-image">
-                    <img src="https://images.pexels.com/photos/3683074/pexels-photo-3683074.jpeg?auto=compress&cs=tinysrgb&w=500" alt="Médicaments">
+                    <img src="{% static 'In no time-cuate.svg' %}" alt="Offre du jour illustration">
                 </div>
             </div>
         </div>
@@ -1888,13 +1744,6 @@ et réservez en toute simplicité où que vous soyez.</p>
 
     {% include 'footer.html' %}
     <script>
-    const allProducts = JSON.parse('{{ popular_products|safe|escapejs }}'.replace(/&quot;/g, '"'));
-    let shownCount = 4;
-    const grid = document.getElementById('popularProductsGrid');
-    const btn = document.getElementById('showMoreProductsBtn');
-    function renderProductCard(product) {
-        if (!product) return `<div class='product-card' style='opacity:0.5;filter:grayscale(1);background:#f3f4f6;display:flex;align-items:center;justify-content:center;'><span style='color:#bbb;font-size:1.1em;'>Aucun produit</span></div>`;
-        return `<div class='product-card product-fade-in'>
             <div class='product-image'>
                 <img src='${product.photo ? product.photo : "https://via.placeholder.com/200x180?text=Produit"}' alt='${product.name}'>
             </div>
@@ -1989,31 +1838,6 @@ et réservez en toute simplicité où que vous soyez.</p>
     setInterval(updatePopularProducts, 10000);
     updatePopularProducts();
     </script>
-    <!-- Grille responsive de produits cosmétiques -->
-    <div class="container">
-        <div class="product-grid-responsive">
-            {% for product in cosmetic_showcase_products %}
-            <div class="product-card-v2">
-                <div class="product-img-container">
-                    {% if product.photo %}
-                        <img src="{{ product.photo.url }}" alt="{{ product.name }}">
-                    {% else %}
-                        <img src="https://via.placeholder.com/200x180?text=Produit" alt="{{ product.name }}">
-                    {% endif %}
-                </div>
-                <div class="product-card-body">
-                    <div class="product-title">{{ product.name }}</div>
-                    <div class="product-desc">{{ product.description|truncatechars:60 }}</div>
-                    <div class="product-prices">
-                        <span class="old-price">{{ product.old_price|default:product.price|add:'500' }} FCFA</span>
-                        <span class="new-price">{{ product.price }} FCFA</span>
-                    </div>
-                    <div class="product-tax">Including Tax</div>
-                </div>
-            </div>
-            {% endfor %}
-        </div>
-    </div>
 </body>
 <!-- Loader global centré -->
 <div id="globalLoader" style="display:none;">

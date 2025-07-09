@@ -24,4 +24,7 @@ urlpatterns = [
     path('annuler_reservation/', cancel_reservation, name='cancel_reservation'),
     path('notifications/', views.notifications, name='notifications'),
     path('api/medicaments-populaires/', views.medicaments_populaires_api, name='api_medicaments_populaires'),
+    path('commandes_partial/', views.commandes_partial, name='commandes_partial'),
+    path('produits_partial/', views.produits_partial, name='produits_partial'),
+    path('panier', views.panier, name='panier'),
 ]
