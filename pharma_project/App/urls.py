@@ -27,4 +27,7 @@ urlpatterns = [
     path('commandes_partial/', views.commandes_partial, name='commandes_partial'),
     path('produits_partial/', views.produits_partial, name='produits_partial'),
     path('panier', views.panier, name='panier'),
+    path('add_to_cart/', views.add_to_cart, name='add_to_cart'),
+    path('cart_content/', views.cart_content, name='cart_content'),
+    path('remove_from_cart/', views.remove_from_cart, name='remove_from_cart'),
 ]

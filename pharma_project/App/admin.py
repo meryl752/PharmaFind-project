@@ -7,6 +7,7 @@ from .models import City
 from .models import District
 from .models import PharmacyProduct
 from .models import Order, OrderItem, Reservation, ReservationItem
+from .models import Cart, CartItem
  
 # Register your models hee.
 class AdminProduct(admin.ModelAdmin):
@@ -69,4 +70,15 @@ class ReservationAdmin(admin.ModelAdmin):
 
 admin.site.register(Order, OrderAdmin)
 admin.site.register(Reservation, ReservationAdmin)
+
+class CartItemInline(admin.TabularInline):
+    model = CartItem
+    extra = 0
+
+class CartAdmin(admin.ModelAdmin):
+    list_display = ('user', 'created_at', 'checked_out')
+    inlines = [CartItemInline]
+
+admin.site.register(Cart, CartAdmin)
+admin.site.register(CartItem)
 

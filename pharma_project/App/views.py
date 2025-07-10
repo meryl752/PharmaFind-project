@@ -18,6 +18,9 @@ from django.views.decorators.http import require_POST
 from .models import Order, Reservation
 from django.db.models import Count
 import random
+from django.views.decorators.http import require_POST
+from django.http import JsonResponse
+from .models import Cart, CartItem, Product
 
 
 
@@ -186,25 +189,37 @@ def search(request):
     # Nouvelle structure : une card par produit ET par pharmacie
     for product in products:
         pharmacies_stock = PharmacyProduct.objects.filter(product=product, quantity__gt=0)
-        for ps in pharmacies_stock:
+        if pharmacies_stock.exists():
+            for ps in pharmacies_stock:
+                info = {
+                    'product': product,
+                    'pharmacy': ps.pharmacy,
+                    'stock': ps.quantity,
+                    'address': str(ps.pharmacy.address),
+                    'city': str(ps.pharmacy.city),
+                    'has_pending_order': False,
+                    'has_pending_reservation': False
+                }
+                if user:
+                    order = Order.objects.filter(customer=user, pharmacy=ps.pharmacy, status='pending').first()
+                    if order and OrderItem.objects.filter(order=order, product=product).exists():
+                        info['has_pending_order'] = True
+                    reservation = Reservation.objects.filter(customer=user, pharmacy=ps.pharmacy, status='pending').first()
+                    if reservation and ReservationItem.objects.filter(reservation=reservation, product=product).exists():
+                        info['has_pending_reservation'] = True
+                products_with_pharmacies.append(info)
+        else:
+            # Produit sans stock dans aucune pharmacie
             info = {
                 'product': product,
-                'pharmacy': ps.pharmacy,
-                'stock': ps.quantity,
-                'address': str(ps.pharmacy.address),
-                'city': str(ps.pharmacy.city),
+                'pharmacy': None,
+                'stock': 0,
+                'address': '',
+                'city': '',
                 'has_pending_order': False,
-                'has_pending_reservation': False
+                'has_pending_reservation': False,
+                'out_of_stock': True
             }
-            if user:
-                # Commande en attente ?
-                order = Order.objects.filter(customer=user, pharmacy=ps.pharmacy, status='pending').first()
-                if order and OrderItem.objects.filter(order=order, product=product).exists():
-                    info['has_pending_order'] = True
-                # Réservation en attente ?
-                reservation = Reservation.objects.filter(customer=user, pharmacy=ps.pharmacy, status='pending').first()
-                if reservation and ReservationItem.objects.filter(reservation=reservation, product=product).exists():
-                    info['has_pending_reservation'] = True
             products_with_pharmacies.append(info)
 
     context = {
@@ -434,3 +449,53 @@ def panier(request):
         return redirect('connexion')
     # À compléter plus tard avec les articles du panier
     return render(request, "App/panier.html")
+
+@require_POST
+def add_to_cart(request):
+    if not request.user.is_authenticated:
+        return JsonResponse({'success': False, 'error': 'Non authentifié'}, status=403)
+    product_id = request.POST.get('product_id')
+    quantity = int(request.POST.get('quantity', 1))
+    try:
+        product = Product.objects.get(id=product_id)
+    except Product.DoesNotExist:
+        return JsonResponse({'success': False, 'error': 'Produit introuvable'}, status=404)
+    cart, created = Cart.objects.get_or_create(user=request.user, checked_out=False)
+    item, created = CartItem.objects.get_or_create(cart=cart, product=product)
+    if not created:
+        item.quantity += quantity
+    else:
+        item.quantity = quantity
+    item.save()
+    return JsonResponse({'success': True, 'cart_count': cart.items.count()})
+
+def cart_content(request):
+    if not request.user.is_authenticated:
+        return JsonResponse({'success': False, 'error': 'Non authentifié'}, status=403)
+    cart = Cart.objects.filter(user=request.user, checked_out=False).first()
+    items = []
+    if cart:
+        for item in cart.items.select_related('product'):
+            items.append({
+                'id': item.product.id,
+                'name': item.product.name,
+                'price': float(item.product.price),
+                'quantity': item.quantity,
+                'photo': item.product.photo.url if item.product.photo else '',
+            })
+    return JsonResponse({'success': True, 'items': items})
+
+@require_POST
+def remove_from_cart(request):
+    if not request.user.is_authenticated:
+        return JsonResponse({'success': False, 'error': 'Non authentifié'}, status=403)
+    product_id = request.POST.get('product_id')
+    cart = Cart.objects.filter(user=request.user, checked_out=False).first()
+    if not cart:
+        return JsonResponse({'success': False, 'error': 'Aucun panier actif'}, status=404)
+    try:
+        item = CartItem.objects.get(cart=cart, product_id=product_id)
+        item.delete()
+        return JsonResponse({'success': True})
+    except CartItem.DoesNotExist:
+        return JsonResponse({'success': False, 'error': 'Produit non trouvé dans le panier'}, status=404)

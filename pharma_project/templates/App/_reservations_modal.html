@@ -38,7 +38,12 @@
 {% if reservations %}
   {% for reservation in reservations %}
     <div class="reservation-card">
-      <div class="date">{{ reservation.reservation_date|date:"d/m/Y H:i" }}</div>
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;">
+        <div class="date">{{ reservation.reservation_date|date:"d/m/Y H:i" }}</div>
+        {% if reservation.status == 'pending' %}
+          <button class="remove-reservation-btn" data-reservation-id="{{ reservation.id }}" data-pharmacy-id="{{ reservation.pharmacy.id }}" style="background:#e53e3e;color:#fff;border:none;border-radius:6px;padding:4px 10px;cursor:pointer;font-size:0.95em;">Remove</button>
+        {% endif %}
+      </div>
       <div class="pharmacy">{{ reservation.pharmacy }}</div>
       <div class="products">
         {% for item in reservation.reservationitem_set.all %}

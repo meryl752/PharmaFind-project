@@ -1412,7 +1412,6 @@
                 </div>
             </div>
         </div>
-                <span class="promo-badge">25% OFF</span>
     </section>
 
     <!-- Popular Medications -->
@@ -1425,13 +1424,12 @@
                 {% for product in initial_products %}
                     {% if product %}
                         <div class="product-card product-fade-in" style="position:relative;">
-                            <div class="product-image" style="position:relative;">
+                            <div class="pharmacy-image">
                                 {% if product.photo %}
                                     <img src="{{ product.photo }}" alt="{{ product.name }}">
                                 {% else %}
                                     <img src="https://via.placeholder.com/200x180?text=Produit" alt="{{ product.name }}">
                                 {% endif %}
-                <span class="promo-badge">25% OFF</span>
                                 {% if product.category_name %}
                                     <span class="product-category badge-categorie">{{ product.category_name }}</span>
                                 {% endif %}
@@ -1445,12 +1443,11 @@
                                     <div class="product-status">Disponible</div>
                                 </div>
                             </div>
-                            <button class="product-btn"><i class="fas fa-shopping-cart"></i>Ajouter au panier</button>
+                            <button class="product-btn add-to-cart-btn" data-product-id="{{ product.id }}"><i class="fas fa-shopping-cart"></i>Ajouter au panier</button>
                         </div>
                     {% else %}
                         <div class="product-card" style="opacity:0.5;filter:grayscale(1);background:#f3f4f6;display:flex;align-items:center;justify-content:center;">
                             <span style="color:#bbb;font-size:1.1em;">Aucun produit</span>
-                <span class="promo-badge">25% OFF</span>
                         </div>
                     {% endif %}
                 {% endfor %}
@@ -1744,36 +1741,127 @@
 
     {% include 'footer.html' %}
     <script>
-            <div class='product-image'>
-                <img src='${product.photo ? product.photo : "https://via.placeholder.com/200x180?text=Produit"}' alt='${product.name}'>
-            </div>
-            <div class='product-info'>
-                <span class="product-category" style="background:#e0f7e9;color:#22c55e;padding:4px 12px;border-radius:15px;font-size:12px;font-weight:500;display:inline-block;margin-bottom:8px;">${product.category_name || ''}</span>
-                <div class='product-name'>${product.name}</div>
-                <div class='product-location'>${product.description ? product.description.substring(0,40) : ''}</div>
-                <div class='product-prescription'>${product.with_ordonance ? "Ordonnance requise" : "Pas d'ordonnance requise"}</div>
-                <div class='product-footer'>
-                    <div class='product-price'>${product.price} FCFA</div>
-                    <div class='product-status'>Disponible</div>
-                </div>
-            </div>
-            <button class='product-btn'><i class='fas fa-shopping-cart'></i>Ajouter au panier</button>
-        </div>`;
+    // Ajout au panier pour les produits populaires
+    function animateAddToCart(btn) {
+      btn.disabled = true;
+      const original = btn.innerHTML;
+      const originalClass = btn.className;
+      btn.classList.add('orange');
+      btn.innerHTML = '<i class="fas fa-check"></i>Ajouté';
+      setTimeout(()=>{
+        btn.innerHTML = original;
+        btn.className = originalClass;
+        btn.disabled = false;
+      }, 1200);
     }
-    if (btn) {
-        btn.addEventListener('click', function() {
-            const toShow = allProducts.slice(shownCount, shownCount+4);
-            toShow.forEach(prod => {
-                const temp = document.createElement('div');
-                temp.innerHTML = renderProductCard(prod);
-                const card = temp.firstChild;
-                grid.appendChild(card);
-                setTimeout(() => card.classList.add('product-fade-in'), 10);
+    function updateCartBadge(count) {
+      const badge = document.querySelector('.badge-panier');
+      if (badge) {
+        if (count > 0) {
+          badge.textContent = count;
+          badge.style.display = 'inline-block';
+        } else {
+          badge.style.display = 'none';
+        }
+      }
+    }
+    function loadCartContent() {
+      fetch('/cart_content/')
+        .then(res => res.json())
+        .then(data => {
+          const container = document.getElementById('cartItemsContainer');
+          if(!data.success) {
+            container.innerHTML = '<p style="color:#e53e3e;">'+(data.error||'Erreur chargement panier')+'</p>';
+            return;
+          }
+          if(data.items.length === 0) {
+            container.innerHTML = '<p>Votre panier est vide.</p>' +
+              '<img src="/static/Add to Cart-amico.png" alt="Panier vide" style="display:block;margin:18px auto 0 auto;max-width:220px;width:80%;opacity:0.85;">';
+            updateCartBadge(0);
+            return;
+          }
+          let html = '<ul style="list-style:none;padding:0;">';
+          data.items.forEach(item => {
+            html += `<li style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
+              <img src="${item.photo}" alt="${item.name}" style="width:48px;height:48px;object-fit:cover;border-radius:8px;">
+              <div style="flex:1;">
+                <div style="font-weight:600;">${item.name}</div>
+                <div style="font-size:13px;color:#888;">${item.price} FCFA x ${item.quantity}</div>
+              </div>
+              <button class="remove-from-cart-btn" data-product-id="${item.id}" style="background:#e53e3e;color:#fff;border:none;border-radius:6px;padding:4px 8px;cursor:pointer;">Retirer</button>
+            </li>`;
+          });
+          html += '</ul>';
+          container.innerHTML = html;
+          document.querySelectorAll('.remove-from-cart-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+              const pid = this.getAttribute('data-product-id');
+              fetch('/remove_from_cart/', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/x-www-form-urlencoded',
+                  'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: `product_id=${pid}`
+              })
+              .then(res => res.json())
+              .then(data => {
+                if(data.success) {
+                  loadCartContent();
+                } else {
+                  alert(data.error || 'Erreur lors du retrait');
+                }
+              });
             });
-            shownCount += 4;
-            if (shownCount >= allProducts.length) btn.style.display = 'none';
+          });
+          updateCartBadge(data.items.length);
         });
     }
+    function getCookie(name) {
+      let cookieValue = null;
+      if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+          const cookie = cookies[i].trim();
+          if (cookie.substring(0, name.length + 1) === (name + '=')) {
+            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+            break;
+          }
+        }
+      }
+      return cookieValue;
+    }
+    function bindAddToCartButtons() {
+      document.querySelectorAll('.add-to-cart-btn').forEach(btn => {
+        btn.replaceWith(btn.cloneNode(true));
+      });
+      document.querySelectorAll('.add-to-cart-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const productId = this.getAttribute('data-product-id');
+          fetch('/add_to_cart/', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded',
+              'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: `product_id=${productId}&quantity=1`
+          })
+          .then(res => res.json())
+          .then(data => {
+            if(data.success) {
+              animateAddToCart(this);
+              updateCartBadge(data.cart_count);
+              loadCartContent();
+            } else {
+              alert(data.error || 'Erreur lors de l\'ajout au panier');
+            }
+          });
+        });
+      });
+    }
+    document.addEventListener('DOMContentLoaded', function() {
+      bindAddToCartButtons();
+    });
     </script>
     <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -1829,10 +1917,11 @@
                                     <div class="product-status">Disponible</div>
                                 </div>
                             </div>
-                            <button class="product-btn"><i class="fas fa-shopping-cart"></i>Ajouter au panier</button>
+                            <button class="product-btn add-to-cart-btn" data-product-id="${prod.id}"><i class="fas fa-shopping-cart"></i>Ajouter au panier</button>
                         </div>
                     `;
                 });
+                bindAddToCartButtons();
             });
     }
     setInterval(updatePopularProducts, 10000);

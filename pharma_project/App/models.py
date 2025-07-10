@@ -69,6 +69,7 @@ class User(AbstractUser):
     insurance_covered = models.ManyToManyField(Insurance, blank=True, related_name="pharmacies")
     photo = models.ImageField(upload_to='pharmacies/', null=True, blank=True)
     is_on_duty = models.BooleanField(default=False, verbose_name="Pharmacie de garde")
+    last_seen = models.DateTimeField(null=True, blank=True)
 
     class Meta:
         verbose_name = " user"
@@ -146,3 +147,19 @@ class PharmacyProduct(models.Model):
 
     def __str__(self):
         return f"{self.pharmacy} - {self.product} : {self.quantity} en stock"    
+
+class Cart(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='carts')
+    created_at = models.DateTimeField(auto_now_add=True)
+    checked_out = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"Panier de {self.user} ({self.created_at})"
+
+class CartItem(models.Model):
+    cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name='items')
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(default=1)
+
+    def __str__(self):
+        return f"{self.quantity} x {self.product.name}"    

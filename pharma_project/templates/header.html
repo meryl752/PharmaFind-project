@@ -495,7 +495,6 @@
   font-weight: bold;
   border-radius: 50%;
   padding: 2px 7px;
-  border: 2px solid #fff;
   box-shadow: 0 1px 4px rgba(229,62,62,0.15);
 }
 .icon-header-label {
@@ -557,21 +556,21 @@
                 {% endif %}
                 {% if user.is_authenticated %}
             <div class="quick-access-icons">
-                <a href="{% url 'reservations' %}" title="Réservations" class="icon-link">
+                <button type="button" title="Réservations" class="icon-link" id="openReservationModal" style="background:none;border:none;padding:0;">
                     <span class="icon-header reservation"><i class="fa fa-solid fa-calendar-check"></i></span>
                     <span class="icon-header-label">Réservations</span>
-                </a>
-                <a href="{% url 'commandes' %}" title="Commandes" class="icon-link">
+                </button>
+                <button type="button" title="Commandes" class="icon-link" id="openOrdersModal" style="background:none;border:none;padding:0;">
                     <span class="icon-header commandes"><i class="fa fa-solid fa-box"></i></span>
                     <span class="icon-header-label">Commandes</span>
-                </a>
-                <a href="{% url 'panier' %}" title="Panier" class="icon-link" style="position:relative;">
+                </button>
+                <span title="Panier" class="icon-link" style="position:relative;cursor:pointer;">
                     <span class="icon-header cart">
                         <i class="fa fa-solid fa-shopping-cart"></i>
-                        <span class="badge-panier">2</span>
+                        <span class="badge-panier" style="display:none;"></span>
                     </span>
                     <span class="icon-header-label">Panier</span>
-                </a>
+                </span>
                 <div class="icon-link">
                     <button type="button" title="Profil" class="profile-initials-circle" id="profileDropdownBtn" style="border:none;background:none;padding:0;cursor:pointer;">
                         {{ user.first_name|slice:":1"|upper }}{{ user.last_name|slice:":1"|upper }}
@@ -597,4 +596,286 @@
             </div>
         </div>
     </header>
+<!-- Modale Panier -->
+<div id="cartModal" class="modal" style="display:none;position:fixed;z-index:9999;top:0;left:0;width:100vw;height:100vh;background:rgba(44,62,80,0.18);align-items:center;justify-content:center;">
+  <div class="modal-content" style="background:#fff;padding:32px 24px;border-radius:16px;max-width:420px;width:90vw;max-height:90vh;overflow-y:auto;position:relative;">
+    <span class="close" id="closeCartModal" style="position:absolute;top:12px;right:18px;font-size:1.5rem;cursor:pointer;">&times;</span>
+    <h2 style="margin-bottom:18px;font-size:1.2rem;">Mon panier</h2>
+    <div id="cartItemsContainer">Chargement...</div>
+        </div>
+    </div>
+<div id="reservationModal" class="modal" style="display:none;position:fixed;z-index:9999;top:0;left:0;width:100vw;height:100vh;background:rgba(44,62,80,0.18);align-items:center;justify-content:center;">
+  <div class="modal-content" style="background:#fff;padding:32px 24px;border-radius:16px;max-width:600px;width:90vw;max-height:90vh;overflow-y:auto;position:relative;">
+    <span class="close" id="closeReservationModal" style="position:absolute;top:12px;right:18px;font-size:1.5rem;cursor:pointer;">&times;</span>
+    <h2 style="margin-bottom:18px;font-size:1.2rem;">Mes réservations</h2>
+    <div id="reservationContent">Chargement...</div>
+  </div>
+</div>
+<div id="ordersModal" class="modal" style="display:none;position:fixed;z-index:9999;top:0;left:0;width:100vw;height:100vh;background:rgba(44,62,80,0.18);align-items:center;justify-content:center;">
+  <div class="modal-content" style="background:#fff;padding:32px 24px;border-radius:16px;max-width:600px;width:90vw;max-height:90vh;overflow-y:auto;position:relative;">
+    <span class="close" id="closeOrdersModal" style="position:absolute;top:12px;right:18px;font-size:1.5rem;cursor:pointer;">&times;</span>
+    <h2 style="margin-bottom:18px;font-size:1.2rem;">Mes commandes</h2>
+    <div id="ordersContent">Chargement...</div>
+  </div>
+</div>
+<script>
+// Ouvre la modale panier
+const cartIcon = document.querySelector('.icon-header.cart');
+const cartModal = document.getElementById('cartModal');
+const closeCartModal = document.getElementById('closeCartModal');
+if(cartIcon && cartModal && closeCartModal) {
+  cartIcon.addEventListener('click', function() {
+    cartModal.style.display = 'flex';
+    loadCartContent();
+  });
+  closeCartModal.addEventListener('click', function() {
+    cartModal.style.display = 'none';
+  });
+  window.addEventListener('click', function(e) {
+    if(e.target === cartModal) cartModal.style.display = 'none';
+  });
+}
+// À l'initialisation, charger dynamiquement le nombre d'articles dans le panier
+window.addEventListener('DOMContentLoaded', function() {
+  fetch('/cart_content/')
+    .then(res => res.json())
+    .then(data => {
+      if (data.success && data.items) {
+        updateCartBadge(data.items.length);
+      } else {
+        updateCartBadge(0);
+      }
+    })
+    .catch(() => updateCartBadge(0));
+});
+// Ajout au panier
+function animateAddToCart(btn) {
+  btn.disabled = true;
+  const original = btn.innerHTML;
+  const originalClass = btn.className;
+  btn.classList.add('orange');
+  btn.innerHTML = '<i class="fas fa-check"></i>Ajouté';
+  setTimeout(()=>{
+    btn.innerHTML = original;
+    btn.className = originalClass;
+    btn.disabled = false;
+  }, 1200);
+}
+function bindAddToCartButtons() {
+  document.querySelectorAll('.add-to-cart-btn').forEach(btn => {
+    // On retire d'abord tout ancien event pour éviter les doublons
+    btn.replaceWith(btn.cloneNode(true));
+  });
+  document.querySelectorAll('.add-to-cart-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const productId = this.getAttribute('data-product-id');
+      fetch('/add_to_cart/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: `product_id=${productId}&quantity=1`
+      })
+      .then(res => res.json())
+      .then(data => {
+        if(data.success) {
+          animateAddToCart(this);
+          updateCartBadge(data.cart_count);
+          loadCartContent();
+        } else {
+          alert(data.error || 'Erreur lors de l\'ajout au panier');
+        }
+      });
+    });
+  });
+}
+document.querySelectorAll('.add-to-cart-btn').forEach(btn => {
+  btn.addEventListener('click', function() {
+    const productId = this.getAttribute('data-product-id');
+    fetch('/add_to_cart/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'X-CSRFToken': getCookie('csrftoken')
+      },
+      body: `product_id=${productId}&quantity=1`
+    })
+    .then(res => res.json())
+    .then(data => {
+      if(data.success) {
+        animateAddToCart(this);
+        updateCartBadge(data.cart_count);
+        loadCartContent();
+      } else {
+        alert(data.error || 'Erreur lors de l\'ajout au panier');
+      }
+    });
+  });
+});
+// Met à jour le badge panier
+function updateCartBadge(count) {
+  const badge = document.querySelector('.badge-panier');
+  if (badge) {
+    if (count > 0) {
+      badge.textContent = count;
+      badge.style.display = 'inline-block';
+    } else {
+      badge.style.display = 'none';
+    }
+  }
+}
+// Charge le contenu du panier dans la modale
+function loadCartContent() {
+  fetch('/cart_content/')
+    .then(res => res.json())
+    .then(data => {
+      const container = document.getElementById('cartItemsContainer');
+      if(!data.success) {
+        container.innerHTML = '<p style="color:#e53e3e;">'+(data.error||'Erreur chargement panier')+'</p>';
+        return;
+      }
+      if(data.items.length === 0) {
+        container.innerHTML = '<p>Votre panier est vide.</p>' +
+          '<img src="/static/Add to Cart-amico.png" alt="Panier vide" style="display:block;margin:18px auto 0 auto;max-width:220px;width:80%;opacity:0.85;">';
+        updateCartBadge(0);
+        return;
+      }
+      let html = '<ul style="list-style:none;padding:0;">';
+      data.items.forEach(item => {
+        html += `<li style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
+          <img src="${item.photo}" alt="${item.name}" style="width:48px;height:48px;object-fit:cover;border-radius:8px;">
+          <div style="flex:1;">
+            <div style="font-weight:600;">${item.name}</div>
+            <div style="font-size:13px;color:#888;">${item.price} FCFA x ${item.quantity}</div>
+          </div>
+          <button class="remove-from-cart-btn" data-product-id="${item.id}" style="background:#e53e3e;color:#fff;border:none;border-radius:6px;padding:4px 8px;cursor:pointer;">Retirer</button>
+        </li>`;
+      });
+      html += '</ul>';
+      container.innerHTML = html;
+      document.querySelectorAll('.remove-from-cart-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const pid = this.getAttribute('data-product-id');
+          fetch('/remove_from_cart/', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded',
+              'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: `product_id=${pid}`
+          })
+          .then(res => res.json())
+          .then(data => {
+            if(data.success) {
+              loadCartContent();
+            } else {
+              alert(data.error || 'Erreur lors du retrait');
+            }
+          });
+        });
+      });
+      updateCartBadge(data.items.length);
+    });
+}
+// Utilitaire pour CSRF
+function getCookie(name) {
+  let cookieValue = null;
+  if (document.cookie && document.cookie !== '') {
+    const cookies = document.cookie.split(';');
+    for (let i = 0; i < cookies.length; i++) {
+      const cookie = cookies[i].trim();
+      if (cookie.substring(0, name.length + 1) === (name + '=')) {
+        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+        break;
+      }
+    }
+  }
+  return cookieValue;
+}
+// Animation spinner (si besoin)
+const style = document.createElement('style');
+style.innerHTML = `@keyframes spin { to { transform: rotate(360deg); } }`;
+document.head.appendChild(style);
+</script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const profileBtn = document.getElementById('profileDropdownBtn');
+            const dropdown = document.getElementById('profileDropdownMenu');
+            if (profileBtn && dropdown) {
+                profileBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+            dropdown.classList.toggle('open');
+                });
+                document.addEventListener('click', function(e) {
+                    if (!dropdown.contains(e.target) && !profileBtn.contains(e.target)) {
+                            dropdown.classList.remove('open');
+                    }
+                });
+                window.addEventListener('resize', function() {
+                    dropdown.classList.remove('open');
+                });
+            }
+});
+    </script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var openReservation = document.getElementById('openReservationModal');
+    if(openReservation) {
+        openReservation.addEventListener('click', function(e) {
+            var modal = document.getElementById('reservationModal');
+            if(modal) {
+                modal.style.display = 'flex';
+                fetch('/reservations?modal=1')
+                  .then(res => res.text())
+                  .then(html => {
+                      document.getElementById('reservationContent').innerHTML = html;
+                      bindRemoveReservationButtons();
+                  });
+            }
+        });
+    }
+    var closeReservation = document.getElementById('closeReservationModal');
+    if(closeReservation) {
+        closeReservation.addEventListener('click', function() {
+            var modal = document.getElementById('reservationModal');
+            if(modal) modal.style.display = 'none';
+        });
+    }
+    window.addEventListener('click', function(e) {
+        var modal = document.getElementById('reservationModal');
+        if(modal && e.target === modal) modal.style.display = 'none';
+    });
+});
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var openOrders = document.getElementById('openOrdersModal');
+    if(openOrders) {
+        openOrders.addEventListener('click', function(e) {
+            var modal = document.getElementById('ordersModal');
+            if(modal) {
+                modal.style.display = 'flex';
+                fetch('/commandes?modal=1')
+                  .then(res => res.text())
+                  .then(html => {
+                      document.getElementById('ordersContent').innerHTML = html;
+                      bindRemoveOrderButtons();
+                  });
+            }
+        });
+    }
+    var closeOrders = document.getElementById('closeOrdersModal');
+    if(closeOrders) {
+        closeOrders.addEventListener('click', function() {
+            var modal = document.getElementById('ordersModal');
+            if(modal) modal.style.display = 'none';
+        });
+    }
+    window.addEventListener('click', function(e) {
+        var modal = document.getElementById('ordersModal');
+        if(modal && e.target === modal) modal.style.display = 'none';
+    });
+});
+</script>
 <!-- Fin header.html --> 

@@ -38,7 +38,12 @@
 {% if orders %}
   {% for order in orders %}
     <div class="order-card">
-      <div class="date">{{ order.order_date|date:"d/m/Y H:i" }}</div>
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;">
+        <div class="date">{{ order.order_date|date:"d/m/Y H:i" }}</div>
+        {% if order.status == 'pending' %}
+          <button class="remove-order-btn" data-order-id="{{ order.id }}" data-pharmacy-id="{{ order.pharmacy.id }}" style="background:#e53e3e;color:#fff;border:none;border-radius:6px;padding:4px 10px;cursor:pointer;font-size:0.95em;">Remove</button>
+        {% endif %}
+      </div>
       <div class="pharmacy">{{ order.pharmacy }}</div>
       <div class="products">
         {% for item in order.orderitem_set.all %}
