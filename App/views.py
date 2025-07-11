@@ -18,6 +18,7 @@ from django.views.decorators.http import require_POST
 from .models import Order, Reservation
 from django.db.models import Count
 import random
+from django.contrib.auth import logout as django_logout
 
 
 

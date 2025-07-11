@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from .models import City
 from .models import User
 from .models import District
-from .models import Product, Category
+from .models import Product, Category, Insurance
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from .form import UserForm
@@ -21,6 +21,10 @@ import random
 from django.views.decorators.http import require_POST
 from django.http import JsonResponse
 from .models import Cart, CartItem, Product
+from django.contrib.auth import logout as django_logout
+from django.utils import timezone
+from django.core.files.storage import default_storage
+import json
 
 
 
@@ -241,7 +245,26 @@ def pharma_connection_view(request):
 
 
 def pharma_dashboard_view(request):
-    return render(request, "App/dashboard_pharma.html")
+    user = request.user
+    pharmacy_fullname = f"{user.first_name} {user.last_name}" if user.role == 'pharmacy' else ''
+    pharmacy_photo = user.photo.url if user.role == 'pharmacy' and user.photo else None
+    # Présence en ligne : last_seen dans les 5 dernières minutes
+    is_online = False
+    if user.role == 'pharmacy' and user.last_seen:
+        now = timezone.now()
+        delta = now - user.last_seen
+        is_online = delta.total_seconds() < 300  # 5 minutes
+    # Récupérer les produits en stock pour cette pharmacie
+    stock = PharmacyProduct.objects.filter(pharmacy=user).select_related('product', 'product__category')
+    # Récupérer tous les produits pour la sélection dans la modale
+    all_products = Product.objects.all()
+    return render(request, "App/dashboard_pharma.html", {
+        'pharmacy_fullname': pharmacy_fullname,
+        'pharmacy_photo': pharmacy_photo,
+        'is_online': is_online,
+        'stock': stock,
+        'all_products': all_products,
+    })
 
 def pharmacy_login_view(request):
     if request.method == 'POST':
@@ -499,3 +522,103 @@ def remove_from_cart(request):
         return JsonResponse({'success': True})
     except CartItem.DoesNotExist:
         return JsonResponse({'success': False, 'error': 'Produit non trouvé dans le panier'}, status=404)
+
+def custom_logout(request):
+    django_logout(request)
+    return redirect('home')
+
+@csrf_exempt
+def add_product_ajax(request):
+    if request.method == 'POST':
+        try:
+            name = request.POST.get('name')
+            price = request.POST.get('price')
+            category_name = request.POST.get('category')
+            description = request.POST.get('description', '')
+            with_ordonance = request.POST.get('with_ordonance') == 'on'
+            insurance_names = request.POST.get('insurance', '')
+            photo = request.FILES.get('photo')
+
+            # Catégorie
+            category, _ = Category.objects.get_or_create(name=category_name)
+            # Produit
+            product = Product.objects.create(
+                name=name,
+                price=price,
+                category=category,
+                description=description,
+                photo=photo,
+                with_ordonance=with_ordonance
+            )
+            # Assurance
+            if insurance_names:
+                for ins_name in [i.strip() for i in insurance_names.split(',') if i.strip()]:
+                    ins, _ = Insurance.objects.get_or_create(name=ins_name)
+                    product.insurance.add(ins)
+            product.save()
+            return JsonResponse({'success': True, 'message': 'Produit créé avec succès.'})
+        except Exception as e:
+            return JsonResponse({'success': False, 'message': str(e)})
+    return JsonResponse({'success': False, 'message': 'Méthode non autorisée.'})
+
+@csrf_exempt
+@require_POST
+def add_stock_ajax(request):
+    if not request.user.is_authenticated or not hasattr(request.user, 'role') or request.user.role != 'pharmacy':
+        return JsonResponse({'success': False, 'message': 'Authentification pharmacie requise.'}, status=403)
+    try:
+        product_id = int(request.POST.get('product_id'))
+        quantity = int(request.POST.get('quantity'))
+        price = float(request.POST.get('price'))
+        from .models import Product
+        product = Product.objects.get(id=product_id)
+        pharmacy = request.user
+        # Ajout ou mise à jour du stock
+        stock, created = PharmacyProduct.objects.get_or_create(pharmacy=pharmacy, product=product)
+        stock.quantity = quantity
+        stock.save()
+        # Mettre à jour le prix du produit si besoin (optionnel)
+        product.price = price
+        product.save()
+        return JsonResponse({'success': True, 'message': 'Produit ajouté au stock.'})
+    except Exception as e:
+        return JsonResponse({'success': False, 'message': str(e)})
+
+@csrf_exempt
+@require_POST
+def remove_stock_ajax(request):
+    if not request.user.is_authenticated or not hasattr(request.user, 'role') or request.user.role != 'pharmacy':
+        return JsonResponse({'success': False, 'message': 'Authentification pharmacie requise.'}, status=403)
+    try:
+        product_id = int(request.POST.get('product_id'))
+        from .models import Product, PharmacyProduct
+        product = Product.objects.get(id=product_id)
+        pharmacy = request.user
+        PharmacyProduct.objects.get(pharmacy=pharmacy, product=product).delete()
+        return JsonResponse({'success': True, 'message': 'Produit retiré du stock.'})
+    except Exception as e:
+        return JsonResponse({'success': False, 'message': str(e)})
+
+@csrf_exempt
+@require_POST
+def edit_stock_ajax(request):
+    if not request.user.is_authenticated or not hasattr(request.user, 'role') or request.user.role != 'pharmacy':
+        return JsonResponse({'success': False, 'message': 'Authentification pharmacie requise.'}, status=403)
+    try:
+        product_id = int(request.POST.get('product_id'))
+        quantity = int(request.POST.get('quantity'))
+        price = float(request.POST.get('price'))
+        from .models import Product, PharmacyProduct
+        product = Product.objects.get(id=product_id)
+        pharmacy = request.user
+        stock = PharmacyProduct.objects.get(pharmacy=pharmacy, product=product)
+        stock.quantity = quantity
+        stock.save()
+        product.price = price
+        product.save()
+        return JsonResponse({'success': True, 'message': 'Stock modifié.'})
+    except Exception as e:
+        return JsonResponse({'success': False, 'message': str(e)})
+
+def pharma_connexion_view(request):
+    return render(request, 'App/Pharma_connexion.html')

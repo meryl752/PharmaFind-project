@@ -15,7 +15,6 @@ urlpatterns = [
     path('search/', views.search, name='search'),
     path('reg', views.index3, name='reg'),
     path('welcome', views.welcome, name='welcome'),
-    path('logout/', LogoutView.as_view(next_page='/'), name='logout'),
     path('pharmacy_connection/', views.pharmacy_login_view, name='pharmacy_connection'),
     path('pharmacy_dashboard/', views.pharma_dashboard_view, name='pharmacy_dashboard'),
     path('commander/', order_product, name='order_product'),

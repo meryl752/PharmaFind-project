@@ -18,14 +18,12 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
-from App.views import search_fragment
-from django.contrib.auth.views import LogoutView
+from App.views import search_fragment, custom_logout
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('App.urls')),
-    path('logout/', LogoutView.as_view(next_page='login'), name='logout'),
 
     path('search/fragment/', search_fragment, name='search_fragment'),
 ]

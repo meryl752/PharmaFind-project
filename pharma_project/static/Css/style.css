@@ -224,7 +224,8 @@ button[type="submit"]:hover {
 }
 
 .main-content {
-  padding: 0;
+  margin-left: 250px;
+  padding: 32px;
 }
 
 .header-dashboard {
@@ -383,3 +384,31 @@ button[type="submit"]:hover {
     box-shadow: 0 2px 8px rgba(44,62,80,0.07);
 }
 /* Ajoute ici d'autres styles mutualisés si besoin */
+.sidebar {
+    width: 250px;
+    min-height: 100vh;
+    background: #eaf6ed;
+    border-right: 4px solid #28a745;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 10;
+    padding-top: 8px !important;
+    padding-bottom: 8px !important;
+}
+.dashboard-pharma .sidebar {
+    width: 250px !important;
+    min-height: 100vh !important;
+    background: #eaf6ed !important;
+    border-right: 4px solid #28a745 !important;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    z-index: 10 !important;
+    padding-top: 8px !important;
+    padding-bottom: 8px !important;
+}
+.dashboard-pharma .main-content {
+    margin-left: 250px !important;
+    padding: 32px !important;
+}

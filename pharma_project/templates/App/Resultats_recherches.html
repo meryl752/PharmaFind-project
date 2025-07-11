@@ -749,10 +749,12 @@
                         <div class="pharmacy-info">
                             <div class="pharmacy-name" style="margin-bottom:8px;display:flex;align-items:center;gap:8px;">
                                 {{ item.pharmacy.first_name }} {{ item.pharmacy.last_name }}
-                                {% if item.pharmacy.last_seen and item.pharmacy.last_seen|timesince < '2 minutes' %}
-                                    <span style="display:inline-flex;align-items:center;gap:4px;"><span style="width:10px;height:10px;background:#22c55e;border-radius:50%;display:inline-block;"></span> <span style="color:#22c55e;font-size:12px;">En ligne</span></span>
-                                {% else %}
-                                    <span style="display:inline-flex;align-items:center;gap:4px;"><span style="width:10px;height:10px;background:#e53e3e;border-radius:50%;display:inline-block;"></span> <span style="color:#e53e3e;font-size:12px;">Hors ligne</span></span>
+                                {% if item.pharmacy %}
+                                    {% if item.pharmacy.last_seen and item.pharmacy.last_seen|timesince < '2 minutes' %}
+                                        <span style="display:inline-flex;align-items:center;gap:4px;"><span style="width:10px;height:10px;background:#22c55e;border-radius:50%;display:inline-block;"></span> <span style="color:#22c55e;font-size:12px;">En ligne</span></span>
+                                    {% else %}
+                                        <span style="display:inline-flex;align-items:center;gap:4px;"><span style="width:10px;height:10px;background:#e53e3e;border-radius:50%;display:inline-block;"></span> <span style="color:#e53e3e;font-size:12px;">Hors ligne</span></span>
+                                    {% endif %}
                                 {% endif %}
                             </div>
                             <div class="pharmacy-details">
